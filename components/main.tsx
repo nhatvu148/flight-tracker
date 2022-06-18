@@ -1,11 +1,11 @@
 import { useState } from "react";
 import {
-  MapContainer,
-  TileLayer,
-  LayersControl,
-  ScaleControl,
-  Marker,
-  Popup,
+    MapContainer,
+    TileLayer,
+    LayersControl,
+    ScaleControl,
+    Marker,
+    Popup,
 } from "react-leaflet";
 import styles from "../styles/Home.module.css";
 import LocationMarker from "./Popup";
@@ -26,30 +26,30 @@ import getConfig from "next/config";
 const { publicRuntimeConfig } = getConfig();
 
 const Main = () => {
-  const [mapcenter, setMapcenter] = useState({ lat: 0, lng: 0 });
-  return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <MapContainer
-          center={[40.8054, -74.0241]}
-          zoom={14}
-          scrollWheelZoom={false}
-          style={{ height: "100%", width: "100%" }}
-        >
-          <TileLayer
-            url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${publicRuntimeConfig.mySecret}`}
-            attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>'
-          />
-          <Marker
-            position={[40.8054, -74.0241]}
-            draggable={true}
-            // animate={true}
-          >
-            <Popup>Hey ! I live here</Popup>
-          </Marker>
-        </MapContainer>
+    const [mapcenter, setMapcenter] = useState({ lat: 0, lng: 0 });
+    return (
+        <div className={styles.container}>
+            <main className={styles.main}>
+                {/* <MapContainer
+                    center={[40.8054, -74.0241]}
+                    zoom={14}
+                    scrollWheelZoom={false}
+                    style={{ height: "100%", width: "100%" }}
+                >
+                    <TileLayer
+                        url={`https://api.mapbox.com/styles/v1/mapbox/streets-v11/tiles/256/{z}/{x}/{y}@2x?access_token=${publicRuntimeConfig.mapboxToken}`}
+                        attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>'
+                    />
+                    <Marker
+                        position={[40.8054, -74.0241]}
+                        draggable={true}
+                    // animate={true}
+                    >
+                        <Popup>Hey ! I live here</Popup>
+                    </Marker>
+                </MapContainer> */}
 
-        {/* <MapContainer
+                {/* <MapContainer
                     center={mapcenter}
                     zoom={3}
                     scrollWheelZoom={false}
@@ -79,7 +79,7 @@ const Main = () => {
                         <LayersControl.BaseLayer checked={false} name="Satellite">
                             <TileLayer
                                 attribution='&copy; <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors'
-                                url="https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=j9tMlNCG1dseYi9nYu9k"
+                                url="https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}"
                             />
                         </LayersControl.BaseLayer>
                     </LayersControl>
@@ -97,7 +97,7 @@ const Main = () => {
                     <ScaleControl position="bottomleft"></ScaleControl>
                 </MapContainer> */}
 
-        {/* <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false} style={{ height: 400, width: "100%" }}>
+                <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false} style={{ height: 400, width: "100%" }}>
                     <TileLayer
                         attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -107,9 +107,9 @@ const Main = () => {
                             A pretty CSS3 popup. <br /> Easily customizable.
                         </Popup>
                     </Marker>
-                </MapContainer> */}
+                </MapContainer>
 
-        {/* <h1 className={styles.title}>
+                {/* <h1 className={styles.title}>
                     Welcome to <a href="https://nextjs.org">Next.js!</a>
                 </h1>
 
@@ -147,9 +147,9 @@ const Main = () => {
                         </p>
                     </a>
                 </div> */}
-      </main>
-    </div>
-  );
+            </main>
+        </div>
+    );
 };
 
 export default Main;

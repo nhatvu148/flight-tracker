@@ -6,6 +6,7 @@ module.exports = {
   publicRuntimeConfig: {
     // Will be available on both server and client
     staticFolder: "/static",
-    mySecret: process.env.MAPBOX_TOKEN, // Pass through env variables
+    mapboxToken: process.env.MAPBOX_TOKEN, // Pass through env variables
+    mapTilerToken: process.env.MAPTILER_TOKEN, // Pass through env variables
   },
 };
