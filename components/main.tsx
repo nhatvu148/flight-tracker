@@ -49,11 +49,11 @@ const Main = () => {
                     </Marker>
                 </MapContainer> */}
 
-                {/* <MapContainer
+                <MapContainer
                     center={mapcenter}
-                    zoom={3}
-                    scrollWheelZoom={false}
-                    touchZoom={false}
+                    zoom={6}
+                    scrollWheelZoom={true}
+                    touchZoom={true}
                     minZoom={2}
                     maxZoom={15}
                     zoomControl={false}
@@ -62,9 +62,15 @@ const Main = () => {
                     //     mapInstance.invalidateSize();
                     // }}
                     id="mapcontainer"
+                    style={{
+                        position: "fixed",
+                        top: 0, 
+                        height: "100%",
+                         width: "100%",
+                    }}
                 >
                     <LayersControl collapsed={true} position="topright">
-                        <LayersControl.BaseLayer checked={true} name="Standard Map">
+                        <LayersControl.BaseLayer checked={false} name="Standard Map">
                             <TileLayer
                                 attribution='&copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors'
                                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -76,10 +82,16 @@ const Main = () => {
                                 url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
                             />
                         </LayersControl.BaseLayer>
-                        <LayersControl.BaseLayer checked={false} name="Satellite">
+                        <LayersControl.BaseLayer checked={false} name="Satellite Mediumres 2016">
                             <TileLayer
-                                attribution='&copy; <a href="https://www.maptiler.com/copyright/" target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors'
-                                url="https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}"
+                                attribution='&copy; <a href="https://www.maptiler.com/copyright"target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                                url={`https://api.maptiler.com/tiles/satellite-mediumres/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}`}
+                            />
+                        </LayersControl.BaseLayer>
+                        <LayersControl.BaseLayer checked={true} name="Satellite">
+                            <TileLayer
+                                attribution='&copy; <a href="https://www.maptiler.com/copyright" target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors'
+                                url={`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}`}
                             />
                         </LayersControl.BaseLayer>
                     </LayersControl>
@@ -95,58 +107,7 @@ const Main = () => {
                         duration={"duration"}
                     />
                     <ScaleControl position="bottomleft"></ScaleControl>
-                </MapContainer> */}
-
-                <MapContainer center={[51.505, -0.09]} zoom={13} scrollWheelZoom={false} style={{ height: 400, width: "100%" }}>
-                    <TileLayer
-                        attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                    />
-                    <Marker position={[51.505, -0.09]}>
-                        <Popup>
-                            A pretty CSS3 popup. <br /> Easily customizable.
-                        </Popup>
-                    </Marker>
                 </MapContainer>
-
-                {/* <h1 className={styles.title}>
-                    Welcome to <a href="https://nextjs.org">Next.js!</a>
-                </h1>
-
-                <p className={styles.description}>
-                    Get started by editing{' '}
-                    <code className={styles.code}>pages/index.tsx</code>
-                </p>
-
-                <div className={styles.grid}>
-                    <a href="https://nextjs.org/docs" className={styles.card}>
-                        <h2>Documentation &rarr;</h2>
-                        <p>Find in-depth information about Next.js features and API.</p>
-                    </a>
-
-                    <a href="https://nextjs.org/learn" className={styles.card}>
-                        <h2>Learn &rarr;</h2>
-                        <p>Learn about Next.js in an interactive course with quizzes!</p>
-                    </a>
-
-                    <a
-                        href="https://github.com/vercel/next.js/tree/canary/examples"
-                        className={styles.card}
-                    >
-                        <h2>Examples &rarr;</h2>
-                        <p>Discover and deploy boilerplate example Next.js projects.</p>
-                    </a>
-
-                    <a
-                        href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-                        className={styles.card}
-                    >
-                        <h2>Deploy &rarr;</h2>
-                        <p>
-                            Instantly deploy your Next.js site to a public URL with Vercel.
-                        </p>
-                    </a>
-                </div> */}
             </main>
         </div>
     );

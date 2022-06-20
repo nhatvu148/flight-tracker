@@ -14,3 +14,9 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.filter-green {
+  filter: invert(94%) sepia(64%) saturate(6447%) hue-rotate(336deg)
+    brightness(91%) contrast(91%);
+  /* How to get filter from Hex: https://codepen.io/sosuke/pen/Pjoqqp */
+}

@@ -2,7 +2,6 @@ import { FC } from "react";
 import { Marker, Popup, useMapEvents /*,Tooltip*/ } from "react-leaflet";
 import { Icon } from "leaflet";
 // import { Link } from "react-router-dom";
-import ShipPic from "./img/containerShip.png";
 // import format from "formatcoords";
 
 interface ILocationMarker {
@@ -19,8 +18,10 @@ interface ILocationMarker {
 
 const ShipIcon = new Icon({
   iconUrl:
-    "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
-  iconSize: [20, 20],
+    // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
+    "aircraft.svg",
+  iconSize: [23, 23],
+  className: "filter-green"
 });
 
 const LocationMarker: FC<ILocationMarker> = ({
