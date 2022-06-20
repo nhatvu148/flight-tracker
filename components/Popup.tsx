@@ -1,5 +1,5 @@
 import { FC } from "react";
-import { Marker, Popup, useMapEvents /*,Tooltip*/ } from "react-leaflet";
+import { Marker, Popup, useMapEvents } from "react-leaflet";
 import { Icon } from "leaflet";
 import Link from "next/link";
 import Tooltip from "@material-ui/core/Tooltip";
@@ -21,7 +21,7 @@ interface ILocationMarker {
   arrivalIataCode: string;
   departureIataCode: string;
   icaoCode: string;
-  airports;
+  airports: string;
 }
 
 const AircraftIcon = new Icon({
@@ -67,24 +67,19 @@ const LocationMarker: FC<ILocationMarker> = ({
           </Link>
         </p> */}
         <p id="pcustom3">From {airports[departureIataCode]} ({departureIataCode}) To {airports[arrivalIataCode]} ({arrivalIataCode})</p>
-        <table id="tbcustom1">
-          <tr>
-            <td width="auto">
-              Aircraft Type: <br />
-              <span id="spancustom1">{icaoCode}</span>
-            </td>
-            <td width="auto">
-              Location: <br />
-              Latitude: <b>{latitude}</b> | Longitude: <b>{longitude}</b>
-            </td>
-          </tr>
-        </table>
+          Aircraft Type: <br />
+          <span id="spancustom1">{icaoCode}</span>
+          Location: <br />
+          Latitude: <b>{latitude}</b> | Longitude: <b>{longitude}</b>
       </Popup>
       <Tooltip
         id="tooltip-left"
         title="Tooltip on left"
         placement="left"
         classes={{ tooltip: classes.tooltip }}
+        onMouseOver={() => {
+          console.log("Mouse over")
+        }}
       >
         <p id="customTooltip">
           {icaoNumber}
