@@ -23,7 +23,7 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 
 import getConfig from "next/config";
-import { FlightData } from "./types";
+import { AirportData, FlightData } from "./types";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -45,11 +45,18 @@ function ZoomLevel() {
 
 interface IProps {
     flights: FlightData[];
+    airports: AirportData;
 }
 
-const Main: FC<IProps> = ({ flights }) => {
-    const { latitude, longitude } = flights[0].geography
-    const [mapcenter, setMapcenter] = useState({ lat: flights.length > 0 ? latitude : 0, lng: flights.length > 0 ? longitude : 0 });
+const Main: FC<IProps> = ({ flights, airports }) => {
+    const { latitude, longitude } = flights[2]?.geography;
+    const { iataCode: arrivalIataCode } = flights[2]?.arrival;
+    const { iataCode: departureIataCode } = flights[2]?.departure;
+
+    const { icaoCode } = flights[2]?.aircraft;
+    const { iataNumber, icaoNumber } = flights[2]?.flight;
+
+    const [mapcenter, setMapcenter] = useState({ lat: latitude ?? 0, lng: longitude ?? 0 });
     return (
         <div className={styles.container}>
             <main className={styles.main}>
@@ -125,10 +132,12 @@ const Main: FC<IProps> = ({ flights }) => {
                         position={mapcenter}
                         center={mapcenter}
                         zoom={3.5}
-                        shipname={"shipname"}
-                        shipowner={"shipowner"}
-                        registerdate={"registerdate"}
-                        duration={"duration"}
+                        icaoCode={icaoCode}
+                        icaoNumber={icaoNumber}
+                        iataNumber={iataNumber}
+                        arrivalIataCode={arrivalIataCode}
+                        departureIataCode={departureIataCode}
+                        airports={airports}
                     />
                     <ScaleControl position="bottomleft"></ScaleControl>
                 </MapContainer>

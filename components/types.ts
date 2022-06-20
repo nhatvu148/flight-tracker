@@ -43,3 +43,7 @@ export interface FlightData {
   status: string;
   system: System;
 }
+
+export interface AirportData {
+  [iata: string]: string;
+}

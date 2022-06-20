@@ -2,13 +2,15 @@ import { FC, useMemo } from "react";
 import type { GetStaticProps, NextPage } from "next";
 import dynamic from "next/dynamic";
 import { getFlights } from "api/flights";
-import { FlightData } from "@/types";
+import { AirportData, FlightData } from "@/types";
+import { getAirports } from "api/airports";
 
 interface IProps {
   flights: FlightData[];
+  airports: AirportData;
 }
 
-const Home: FC<IProps> = ({ flights }) => {
+const Home: FC<IProps> = ({ flights, airports }) => {
   const Map = useMemo(
     () =>
       dynamic(
@@ -23,14 +25,16 @@ const Home: FC<IProps> = ({ flights }) => {
     ]
   );
 
-  return <Map flights={flights} />;
+  return <Map flights={flights} airports={airports} />;
 };
 
 export const getStaticProps: GetStaticProps = async ({ params }) => {
   const flights = await getFlights();
+  const airports = await getAirports();
   return {
     props: {
       flights,
+      airports,
     },
   };
 };

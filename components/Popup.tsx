@@ -1,8 +1,14 @@
 import { FC } from "react";
 import { Marker, Popup, useMapEvents /*,Tooltip*/ } from "react-leaflet";
 import { Icon } from "leaflet";
-// import { Link } from "react-router-dom";
-// import format from "formatcoords";
+import Link from "next/link";
+import Tooltip from "@material-ui/core/Tooltip";
+import { makeStyles } from "@material-ui/core";
+
+import javascriptStyles from "styles/jss/nextjs-material-kit-pro/pages/componentsSections/javascriptStyles.js";
+
+// @ts-ignore
+const useStyles = makeStyles(javascriptStyles);
 
 interface ILocationMarker {
   latitude: number;
@@ -10,10 +16,12 @@ interface ILocationMarker {
   position: any;
   center: any;
   zoom: any;
-  shipname: string;
-  shipowner: string;
-  registerdate: string;
-  duration: string;
+  icaoNumber: string;
+  iataNumber: string;
+  arrivalIataCode: string;
+  departureIataCode: string;
+  icaoCode: string;
+  airports;
 }
 
 const AircraftIcon = new Icon({
@@ -30,8 +38,12 @@ const LocationMarker: FC<ILocationMarker> = ({
   position,
   center,
   zoom,
-  shipname,
-  duration,
+  icaoNumber,
+  iataNumber,
+  arrivalIataCode,
+  departureIataCode,
+  icaoCode,
+  airports
 }) => {
   const map = useMapEvents({
     locationfound(e) {
@@ -39,33 +51,27 @@ const LocationMarker: FC<ILocationMarker> = ({
       map.setView(center, zoom);
     },
   });
-
-  // const formatcoords = require("formatcoords");
-  // const tempposition: string = formatcoords(latitude, longitude).format("X DDMMs", {
-  //   latLonSeparator: ", ",
-  //   decimalPlaces: 3
-  // });
-
-  // const formatpos: string[] = tempposition.split(",");
+  const classes = useStyles();
 
   return position === null ? null : (
     <Marker position={position} icon={AircraftIcon}>
       <Popup>
-        <h2>SHIP NAME: {shipname}</h2>
-        {/* <img id="img1" src={ShipPic} alt="ship"></img> */}
-        <p id="pcustom1">
-          {/* <Link id="linkbutton1" to="/admin/dashboard">
-                        Report
-                    </Link>
-                    <Link id="linkbutton2" to="/admin/shipInformation">
-                        Vessel Details
-                    </Link> */}
-        </p>
+        <h2>{iataNumber}/{icaoNumber}</h2>
+        <img id="img1" src={"https://cdn.jetphotos.com/full/6/30981_1637499162.jpg"} alt="ship" width="300"></img>
+        {/* <p id="pcustom1">
+          <Link id="linkbutton1" href="/admin/dashboard">
+            Report
+          </Link>
+          <Link id="linkbutton2" href="/admin/shipInformation">
+            Vessel Details
+          </Link>
+        </p> */}
+        <p id="pcustom3">From {airports[departureIataCode]} ({departureIataCode}) To {airports[arrivalIataCode]} ({arrivalIataCode})</p>
         <table id="tbcustom1">
           <tr>
             <td width="auto">
-              Status: <br />
-              <span id="spancustom1">Transit</span>
+              Aircraft Type: <br />
+              <span id="spancustom1">{icaoCode}</span>
             </td>
             <td width="auto">
               Location: <br />
@@ -73,20 +79,17 @@ const LocationMarker: FC<ILocationMarker> = ({
             </td>
           </tr>
         </table>
-        <p id="pcustom3">Received: {duration}</p>
       </Popup>
-      {/* <Tooltip direction="auto" sticky={true} opacity={1} permanent={false}>
+      <Tooltip
+        id="tooltip-left"
+        title="Tooltip on left"
+        placement="left"
+        classes={{ tooltip: classes.tooltip }}
+      >
         <p id="customTooltip">
-          <b>{shipname}</b> <br />
-          Coordinate:&nbsp;
-          <b>
-            {formatpos[0]},{formatpos[1]}
-          </b>
-          <br />
-          Position received:&nbsp;
-          <b>{duration}</b>
+          {icaoNumber}
         </p>
-      </Tooltip> */}
+      </Tooltip>
     </Marker>
   );
 };
