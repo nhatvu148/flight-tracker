@@ -49,14 +49,8 @@ interface IProps {
 }
 
 const Main: FC<IProps> = ({ flights, airports }) => {
-    const { latitude, longitude } = flights[2]?.geography;
-    const { iataCode: arrivalIataCode } = flights[2]?.arrival;
-    const { iataCode: departureIataCode } = flights[2]?.departure;
-
-    const { icaoCode } = flights[2]?.aircraft;
-    const { iataNumber, icaoNumber } = flights[2]?.flight;
-
-    const [mapcenter, setMapcenter] = useState({ lat: latitude ?? 0, lng: longitude ?? 0 });
+    // To do: Use current location
+    const [mapcenter, setMapcenter] = useState({ lat: 0, lng: 0 });
     return (
         <div className={styles.container}>
             <main className={styles.main}>
@@ -126,19 +120,34 @@ const Main: FC<IProps> = ({ flights, airports }) => {
                             />
                         </LayersControl.BaseLayer>
                     </LayersControl>
-                    <LocationMarker
-                        latitude={mapcenter.lat}
-                        longitude={mapcenter.lng}
-                        position={mapcenter}
-                        center={mapcenter}
-                        zoom={3.5}
-                        icaoCode={icaoCode}
-                        icaoNumber={icaoNumber}
-                        iataNumber={iataNumber}
-                        arrivalIataCode={arrivalIataCode}
-                        departureIataCode={departureIataCode}
-                        airports={airports}
-                    />
+                    {
+                        flights.slice(0, 20).map((flight, id) => {
+                            const { latitude, longitude } = flight?.geography;
+                            const { iataCode: arrivalIataCode } = flight?.arrival;
+                            const { iataCode: departureIataCode } = flight?.departure;
+
+                            const { icaoCode } = flight?.aircraft;
+                            const { iataNumber, icaoNumber } = flight?.flight;
+                            const position = { lat: latitude ?? 0, lng: longitude ?? 0 };
+                            return (
+                                <LocationMarker
+                                    key={id}
+                                    latitude={latitude}
+                                    longitude={longitude}
+                                    position={position}
+                                    center={position}
+                                    // zoom={3.5}
+                                    icaoCode={icaoCode}
+                                    icaoNumber={icaoNumber}
+                                    iataNumber={iataNumber}
+                                    arrivalIataCode={arrivalIataCode}
+                                    departureIataCode={departureIataCode}
+                                    airports={airports}
+                                />
+                            )
+                        })
+                    }
+
                     <ScaleControl position="bottomleft"></ScaleControl>
                 </MapContainer>
             </main>

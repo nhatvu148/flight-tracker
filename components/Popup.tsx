@@ -2,10 +2,10 @@ import { FC } from "react";
 import { Marker, Popup, useMapEvents } from "react-leaflet";
 import { Icon } from "leaflet";
 import Link from "next/link";
-import Tooltip from "@material-ui/core/Tooltip";
-import { makeStyles } from "@material-ui/core";
+import { Button, makeStyles, Tooltip } from "@material-ui/core";
 
 import javascriptStyles from "styles/jss/nextjs-material-kit-pro/pages/componentsSections/javascriptStyles.js";
+import { AirportData } from "./types";
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
@@ -15,13 +15,13 @@ interface ILocationMarker {
   longitude: number;
   position: any;
   center: any;
-  zoom: any;
+  // zoom: any;
   icaoNumber: string;
   iataNumber: string;
   arrivalIataCode: string;
   departureIataCode: string;
   icaoCode: string;
-  airports: string;
+  airports: AirportData;
 }
 
 const AircraftIcon = new Icon({
@@ -37,7 +37,7 @@ const LocationMarker: FC<ILocationMarker> = ({
   longitude,
   position,
   center,
-  zoom,
+  // zoom,
   icaoNumber,
   iataNumber,
   arrivalIataCode,
@@ -45,12 +45,12 @@ const LocationMarker: FC<ILocationMarker> = ({
   icaoCode,
   airports
 }) => {
-  const map = useMapEvents({
-    locationfound(e) {
-      map.flyTo(position, map.getZoom());
-      map.setView(center, zoom);
-    },
-  });
+  // const map = useMapEvents({
+  //   locationfound(e) {
+  //     map.flyTo(position, map.getZoom());
+  //     map.setView(center, zoom);
+  //   },
+  // });
   const classes = useStyles();
 
   return position === null ? null : (
@@ -67,12 +67,12 @@ const LocationMarker: FC<ILocationMarker> = ({
           </Link>
         </p> */}
         <p id="pcustom3">From {airports[departureIataCode]} ({departureIataCode}) To {airports[arrivalIataCode]} ({arrivalIataCode})</p>
-          Aircraft Type: <br />
-          <span id="spancustom1">{icaoCode}</span>
-          Location: <br />
-          Latitude: <b>{latitude}</b> | Longitude: <b>{longitude}</b>
+        Aircraft Type: <br />
+        <span id="spancustom1">{icaoCode}</span>
+        Location: <br />
+        Latitude: <b>{latitude}</b> | Longitude: <b>{longitude}</b>
       </Popup>
-      <Tooltip
+      {/* <Tooltip
         id="tooltip-left"
         title="Tooltip on left"
         placement="left"
@@ -81,10 +81,14 @@ const LocationMarker: FC<ILocationMarker> = ({
           console.log("Mouse over")
         }}
       >
-        <p id="customTooltip">
+        <h1 id="customTooltip">
           {icaoNumber}
-        </p>
-      </Tooltip>
+        </h1>
+      </Tooltip> */}
+      {/* <Tooltip title="Add" placement="left">
+        <Button>top-start</Button>
+      </Tooltip> */}
+
     </Marker>
   );
 };
