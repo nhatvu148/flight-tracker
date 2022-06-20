@@ -1,8 +1,14 @@
-import { useMemo } from "react";
-import type { NextPage } from "next";
+import { FC, useMemo } from "react";
+import type { GetStaticProps, NextPage } from "next";
 import dynamic from "next/dynamic";
+import { getFlights } from "api/flights";
+import { FlightData } from "@/types";
 
-const Home: NextPage = () => {
+interface IProps {
+  flights: FlightData[];
+}
+
+const Home: FC<IProps> = ({ flights }) => {
   const Map = useMemo(
     () =>
       dynamic(
@@ -17,7 +23,16 @@ const Home: NextPage = () => {
     ]
   );
 
-  return <Map />;
+  return <Map flights={flights} />;
+};
+
+export const getStaticProps: GetStaticProps = async ({ params }) => {
+  const flights = await getFlights();
+  return {
+    props: {
+      flights,
+    },
+  };
 };
 
 export default Home;

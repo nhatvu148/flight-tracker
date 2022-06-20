@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { FC, useState } from "react";
 import {
     MapContainer,
     TileLayer,
@@ -6,6 +6,7 @@ import {
     ScaleControl,
     Marker,
     Popup,
+    useMapEvents
 } from "react-leaflet";
 import styles from "../styles/Home.module.css";
 import LocationMarker from "./Popup";
@@ -22,11 +23,33 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 
 import getConfig from "next/config";
+import { FlightData } from "./types";
 
 const { publicRuntimeConfig } = getConfig();
 
-const Main = () => {
-    const [mapcenter, setMapcenter] = useState({ lat: 0, lng: 0 });
+function ZoomLevel() {
+    const [zoomLevel, setZoomLevel] = useState(5); // initial zoom level provided for MapContainer
+
+    const mapEvents = useMapEvents({
+        zoomend: () => {
+            setZoomLevel(mapEvents.getZoom());
+        },
+    });
+
+    console.log(zoomLevel);
+    console.log("center: ", mapEvents.getCenter())
+    // To do: create dynamic route with variable center coordinates
+
+    return null
+}
+
+interface IProps {
+    flights: FlightData[];
+}
+
+const Main: FC<IProps> = ({ flights }) => {
+    const { latitude, longitude } = flights[0].geography
+    const [mapcenter, setMapcenter] = useState({ lat: flights.length > 0 ? latitude : 0, lng: flights.length > 0 ? longitude : 0 });
     return (
         <div className={styles.container}>
             <main className={styles.main}>
@@ -64,11 +87,12 @@ const Main = () => {
                     id="mapcontainer"
                     style={{
                         position: "fixed",
-                        top: 0, 
+                        top: 0,
                         height: "100%",
-                         width: "100%",
+                        width: "100%",
                     }}
                 >
+                    <ZoomLevel />
                     <LayersControl collapsed={true} position="topright">
                         <LayersControl.BaseLayer checked={false} name="Standard Map">
                             <TileLayer

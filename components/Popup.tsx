@@ -16,12 +16,12 @@ interface ILocationMarker {
   duration: string;
 }
 
-const ShipIcon = new Icon({
+const AircraftIcon = new Icon({
   iconUrl:
     // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
     "aircraft.svg",
   iconSize: [23, 23],
-  className: "filter-green"
+  className: "aircraft"
 });
 
 const LocationMarker: FC<ILocationMarker> = ({
@@ -49,7 +49,7 @@ const LocationMarker: FC<ILocationMarker> = ({
   // const formatpos: string[] = tempposition.split(",");
 
   return position === null ? null : (
-    <Marker position={position} icon={ShipIcon}>
+    <Marker position={position} icon={AircraftIcon}>
       <Popup>
         <h2>SHIP NAME: {shipname}</h2>
         {/* <img id="img1" src={ShipPic} alt="ship"></img> */}
