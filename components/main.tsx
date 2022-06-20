@@ -1,4 +1,4 @@
-import { FC, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import {
     MapContainer,
     TileLayer,
@@ -27,15 +27,29 @@ import { AirportData, FlightData } from "./types";
 
 const { publicRuntimeConfig } = getConfig();
 
+const initialZoom = 4;
+const initialLatitude = 51;
+const initialLongitude = -2;
+
 function ZoomLevel() {
-    const [zoomLevel, setZoomLevel] = useState(5); // initial zoom level provided for MapContainer
+    const [zoomLevel, setZoomLevel] = useState(initialZoom);
+    const [latitude, setLatitude] = useState(initialLatitude);
+    const [longitude, setLongitude] = useState(initialLongitude);
 
     const mapEvents = useMapEvents({
         zoomend: () => {
             setZoomLevel(mapEvents.getZoom());
         },
+        moveend: () => {
+            const { lat, lng } = mapEvents.getCenter();
+            setLatitude(lat);
+            setLongitude(lng);
+        }
     });
 
+    window.localStorage.setItem("map.zoom", zoomLevel.toString());
+    window.localStorage.setItem("map.latitude", latitude.toString());
+    window.localStorage.setItem("map.longitude", longitude.toString());
     console.log(zoomLevel);
     console.log("center: ", mapEvents.getCenter())
     // To do: create dynamic route with variable center coordinates
@@ -49,8 +63,18 @@ interface IProps {
 }
 
 const Main: FC<IProps> = ({ flights, airports }) => {
-    // To do: Use current location
-    const [mapcenter, setMapcenter] = useState({ lat: 0, lng: 0 });
+    // To do: Use default location + default zoom = 4
+    const [mapcenter, setMapcenter] = useState({
+        lat: !!window.localStorage.getItem("map.latitude")
+            ? JSON.parse(window.localStorage.getItem("map.latitude"))
+            : initialLatitude, lng: !!window.localStorage.getItem("map.longitude")
+                ? JSON.parse(window.localStorage.getItem("map.longitude"))
+                : initialLongitude
+    });
+    const [zoom, setZoom] = useState(!!window.localStorage.getItem("map.zoom")
+        ? JSON.parse(window.localStorage.getItem("map.zoom"))
+        : initialZoom);
+
     return (
         <div className={styles.container}>
             <main className={styles.main}>
@@ -75,7 +99,7 @@ const Main: FC<IProps> = ({ flights, airports }) => {
 
                 <MapContainer
                     center={mapcenter}
-                    zoom={6}
+                    zoom={zoom}
                     scrollWheelZoom={true}
                     touchZoom={true}
                     minZoom={2}
