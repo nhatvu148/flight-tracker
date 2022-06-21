@@ -78,7 +78,7 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
   //   },
   // });
   const classes = useStyles();
-  const { data: airports }: UseQueryResult<AirportData, Error> = useQuery("airports", getAirports);
+  // const { data: airports }: UseQueryResult<AirportData, Error> = useQuery("airportås", getAirports);
 
   return null;
   // position === null ? null : (
