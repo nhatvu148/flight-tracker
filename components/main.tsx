@@ -31,10 +31,6 @@ import ZoomLevel from "./ZoomLevel";
 
 const { publicRuntimeConfig } = getConfig();
 
-const initialZoom = 4;
-const initialLatitude = 51;
-const initialLongitude = -2;
-
 interface IStateProps {
     main: IMainState;
 }
@@ -42,23 +38,11 @@ interface IStateProps {
 type IProps = IStateProps;
 
 const Main: FC<IProps> = ({
-    main: { bounds: { west, east, south, north } },
+    main: { bounds: { west, east, south, north }, mapCenter, zoom },
 }) => {
     // query from cache, no need to pass through props
     const { data: flights, isLoading }: UseQueryResult<FlightData[], Error> = useQuery("flights", getFlights);
     console.log({ isLoading });
-
-    // To do: Use default location + default zoom = 4
-    const [mapcenter, setMapcenter] = useState({
-        lat: !!window.localStorage.getItem("map.latitude")
-            ? JSON.parse(window.localStorage.getItem("map.latitude"))
-            : initialLatitude, lng: !!window.localStorage.getItem("map.longitude")
-                ? JSON.parse(window.localStorage.getItem("map.longitude"))
-                : initialLongitude
-    });
-    const [zoom, setZoom] = useState(!!window.localStorage.getItem("map.zoom")
-        ? JSON.parse(window.localStorage.getItem("map.zoom"))
-        : initialZoom);
 
     return (
         <div className={styles.container}>
@@ -83,7 +67,7 @@ const Main: FC<IProps> = ({
                 </MapContainer> */}
 
                 <MapContainer
-                    center={mapcenter}
+                    center={mapCenter}
                     zoom={zoom}
                     scrollWheelZoom={true}
                     touchZoom={true}

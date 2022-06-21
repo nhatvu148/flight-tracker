@@ -1,5 +1,7 @@
 export enum ActionTypes {
   SET_BOUNDS,
+  SET_MAP_CENTER,
+  SET_ZOOM,
 }
 
 export enum DownloadType {
@@ -26,8 +28,18 @@ export interface IBounds {
   north: number;
 }
 
-export interface IMainState {
-  bounds: IBounds;
+export interface ICoordinate {
+  lat: number;
+  lng: number;
 }
 
-export type TMainAction = { type: ActionTypes.SET_BOUNDS; payload: IBounds };
+export interface IMainState {
+  bounds: IBounds;
+  mapCenter: ICoordinate;
+  zoom: number;
+}
+
+export type TMainAction =
+  | { type: ActionTypes.SET_BOUNDS; payload: IBounds }
+  | { type: ActionTypes.SET_MAP_CENTER; payload: ICoordinate }
+  | { type: ActionTypes.SET_ZOOM; payload: number };

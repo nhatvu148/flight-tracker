@@ -10,3 +10,10 @@ export const isInsideMapBound = (
 
   return false;
 };
+
+export const checkLocalStorage = (key: string) => {
+  return (
+    typeof window !== "undefined" &&
+    !!window.localStorage.getItem(key)
+  );
+};
