@@ -18,14 +18,6 @@ interface ILocationMarker {
   flights: FlightData[];
 }
 
-const AircraftIcon = (direction: number) => new Icon({
-  iconUrl:
-    // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
-    "aircraft.svg",
-  iconSize: [25, 25],
-  className: "aircraft"
-});
-
 const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
   const map = useMap();
 
@@ -40,7 +32,7 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
     mouse.addTo(map);
 
     const icon = L.icon({
-      iconUrl: "aircraft.svg",
+      iconUrl: "aircraft.svg", // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
       iconSize: [25, 25],
       iconAnchor: [10, 0],
     });

@@ -6,7 +6,6 @@ import {
     ScaleControl,
     useMap,
 } from "react-leaflet";
-declare const L: any;
 import styles from "../styles/Home.module.css";
 import LocationMarker from "./Popup";
 import "leaflet-easybutton";
@@ -76,10 +75,6 @@ const Main: FC<IProps> = ({
                     minZoom={2}
                     maxZoom={15}
                     zoomControl={false}
-                    // whenCreated={(mapInstance: any) => {
-                    //     setRefMap(mapInstance);
-                    //     mapInstance.invalidateSize();
-                    // }}
                     id="mapcontainer"
                     style={{
                         position: "fixed",
