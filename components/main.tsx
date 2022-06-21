@@ -24,12 +24,9 @@ import { FlightData } from "./types";
 import { isInsideMapBound } from "helper/functions";
 import { useQuery, UseQueryResult } from "react-query";
 import { getFlights } from "api/flights";
-import { ThunkDispatch } from "redux-thunk";
-import { AnyAction, bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { IAppState } from "redux/reducers";
-import { IBounds, IMainState } from "redux/types";
-import { setBounds } from "redux/actions/mainActions";
+import { IMainState } from "redux/types";
 import ZoomLevel from "./ZoomLevel";
 
 const { publicRuntimeConfig } = getConfig();
@@ -39,19 +36,13 @@ const initialLatitude = 51;
 const initialLongitude = -2;
 
 interface IStateProps {
-    main?: IMainState;
+    main: IMainState;
 }
 
-interface IDispatchProps {
-    dispatch?: ThunkDispatch<{}, {}, AnyAction>;
-    setBounds?: (newData: IBounds) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
-}
-
-type IProps = IStateProps & IDispatchProps;
+type IProps = IStateProps;
 
 const Main: FC<IProps> = ({
     main: { bounds: { west, east, south, north } },
-    dispatch
 }) => {
     // query from cache, no need to pass through props
     const { data: flights, isLoading }: UseQueryResult<FlightData[], Error> = useQuery("flights", getFlights);
@@ -111,7 +102,7 @@ const Main: FC<IProps> = ({
                         width: "100%",
                     }}
                 >
-                    <ZoomLevel dispatch={dispatch}/>
+                    <ZoomLevel />
                     <LayersControl collapsed={true} position="topright">
                         <LayersControl.BaseLayer checked={false} name="Standard Map">
                             <TileLayer
@@ -181,15 +172,4 @@ const mapStateToProps = (state: IAppState): IStateProps => ({
     main: state.main
 });
 
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    return {
-        ...bindActionCreators(
-            {
-                setBounds
-            },
-            dispatch
-        )
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default connect(mapStateToProps)(Main);

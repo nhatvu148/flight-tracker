@@ -5,7 +5,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { IAppState } from "redux/reducers";
-import { ActionTypes, IBounds, IMainState } from "redux/types";
+import { IBounds } from "redux/types";
 import { setBounds } from "redux/actions/mainActions";
 import { LatLngBounds } from "leaflet";
 
@@ -18,11 +18,11 @@ interface IStateProps {
 }
 
 interface IDispatchProps {
-    dispatch: ThunkDispatch<{}, {}, AnyAction>;
+    dispatch?: ThunkDispatch<{}, {}, AnyAction>;
     setBounds: (newData: IBounds) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
 }
 
-type IProps = IDispatchProps;
+type IProps = IStateProps & IDispatchProps;
 
 const ZoomLevel: FC<any> = ({ setBounds }) => {
     const [zoomLevel, setZoomLevel] = useState(initialZoom);
@@ -79,7 +79,12 @@ const mapStateToProps = (state: IAppState): IStateProps => ({
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
     return {
-        setBounds
+        ...bindActionCreators(
+            {
+                setBounds
+            },
+            dispatch
+        )
     };
 };
 
