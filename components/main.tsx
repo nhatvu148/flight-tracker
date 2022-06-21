@@ -23,13 +23,20 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 
 import getConfig from "next/config";
-import { AirportData, FlightData } from "./types";
+import { FlightData } from "./types";
+import { isInsideMapBound } from "helper/functions";
+import { useQuery, UseQueryResult } from "react-query";
+import { getFlights } from "api/flights";
 
 const { publicRuntimeConfig } = getConfig();
 
 const initialZoom = 4;
 const initialLatitude = 51;
 const initialLongitude = -2;
+let west = 0;
+let east = 0;
+let south = 0;
+let north = 0;
 
 function ZoomLevel() {
     const [zoomLevel, setZoomLevel] = useState(initialZoom);
@@ -52,17 +59,20 @@ function ZoomLevel() {
     window.localStorage.setItem("map.longitude", longitude.toString());
     console.log(zoomLevel);
     console.log("center: ", mapEvents.getCenter())
+    west = mapEvents.getBounds().getWest()
+    south = mapEvents.getBounds().getSouth()
+    east = mapEvents.getBounds().getEast()
+    north = mapEvents.getBounds().getNorth()
     // To do: create dynamic route with variable center coordinates
 
     return null
 }
 
-interface IProps {
-    flights: FlightData[];
-    airports: AirportData;
-}
+const Main: FC = () => {
+    // query from cache, no need to pass through props
+    const { data: flights, isLoading }: UseQueryResult<FlightData[], Error> = useQuery("flights", getFlights);
+    console.log({ isLoading });
 
-const Main: FC<IProps> = ({ flights, airports }) => {
     // To do: Use default location + default zoom = 4
     const [mapcenter, setMapcenter] = useState({
         lat: !!window.localStorage.getItem("map.latitude")
@@ -145,13 +155,18 @@ const Main: FC<IProps> = ({ flights, airports }) => {
                         </LayersControl.BaseLayer>
                     </LayersControl>
                     {
-                        flights.slice(0, 20).map((flight, id) => {
-                            const { latitude, longitude } = flight?.geography;
-                            const { iataCode: arrivalIataCode } = flight?.arrival;
-                            const { iataCode: departureIataCode } = flight?.departure;
+                        flights.slice(0, 5).filter(flight => {
+                            const { latitude, longitude } = flight.geography;
+                            console.log({ latitude, longitude });
+                            console.log({ west, south, east, north });
+                            return true //isInsideMapBound(west, south, east, north, longitude, latitude)
+                        }).map((flight, id) => {
+                            const { latitude, longitude } = flight.geography;
+                            const { iataCode: arrivalIataCode } = flight.arrival;
+                            const { iataCode: departureIataCode } = flight.departure;
 
-                            const { icaoCode } = flight?.aircraft;
-                            const { iataNumber, icaoNumber } = flight?.flight;
+                            const { icaoCode } = flight.aircraft;
+                            const { iataNumber, icaoNumber } = flight.flight;
                             const position = { lat: latitude ?? 0, lng: longitude ?? 0 };
                             return (
                                 <LocationMarker
@@ -166,7 +181,6 @@ const Main: FC<IProps> = ({ flights, airports }) => {
                                     iataNumber={iataNumber}
                                     arrivalIataCode={arrivalIataCode}
                                     departureIataCode={departureIataCode}
-                                    airports={airports}
                                 />
                             )
                         })

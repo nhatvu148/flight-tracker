@@ -1,16 +1,11 @@
 import { FC, useMemo } from "react";
-import type { GetStaticProps, NextPage } from "next";
+import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
+import { dehydrate, QueryClient } from "react-query";
 import { getFlights } from "api/flights";
-import { AirportData, FlightData } from "@/types";
 import { getAirports } from "api/airports";
 
-interface IProps {
-  flights: FlightData[];
-  airports: AirportData;
-}
-
-const Home: FC<IProps> = ({ flights, airports }) => {
+const Home: FC = () => {
   const Map = useMemo(
     () =>
       dynamic(
@@ -25,16 +20,18 @@ const Home: FC<IProps> = ({ flights, airports }) => {
     ]
   );
 
-  return <Map flights={flights} airports={airports} />;
+  return <Map />;
 };
 
-export const getStaticProps: GetStaticProps = async ({ params }) => {
-  const flights = await getFlights();
-  const airports = await getAirports();
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery("flights", getFlights);
+  await queryClient.prefetchQuery("airports", getAirports);
+
   return {
     props: {
-      flights,
-      airports,
+      dehydratedState: dehydrate(queryClient),
     },
   };
 };

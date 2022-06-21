@@ -6,6 +6,8 @@ import { Button, makeStyles, Tooltip } from "@material-ui/core";
 
 import javascriptStyles from "styles/jss/nextjs-material-kit-pro/pages/componentsSections/javascriptStyles.js";
 import { AirportData } from "./types";
+import { useQuery, UseQueryResult } from "react-query";
+import { getAirports } from "api/airports";
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
@@ -21,14 +23,13 @@ interface ILocationMarker {
   arrivalIataCode: string;
   departureIataCode: string;
   icaoCode: string;
-  airports: AirportData;
 }
 
 const AircraftIcon = new Icon({
   iconUrl:
     // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
     "aircraft.svg",
-  iconSize: [23, 23],
+  iconSize: [25, 25],
   className: "aircraft"
 });
 
@@ -43,7 +44,6 @@ const LocationMarker: FC<ILocationMarker> = ({
   arrivalIataCode,
   departureIataCode,
   icaoCode,
-  airports
 }) => {
   // const map = useMapEvents({
   //   locationfound(e) {
@@ -52,6 +52,7 @@ const LocationMarker: FC<ILocationMarker> = ({
   //   },
   // });
   const classes = useStyles();
+  const { data: airports }: UseQueryResult<AirportData, Error> = useQuery("airports", getAirports);
 
   return position === null ? null : (
     <Marker position={position} icon={AircraftIcon}>
