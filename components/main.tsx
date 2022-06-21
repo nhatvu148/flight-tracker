@@ -1,10 +1,12 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import {
     MapContainer,
     TileLayer,
     LayersControl,
     ScaleControl,
+    useMap,
 } from "react-leaflet";
+declare const L: any;
 import styles from "../styles/Home.module.css";
 import LocationMarker from "./Popup";
 import "leaflet-easybutton";
@@ -12,6 +14,7 @@ import "leaflet-fullscreen/dist/Leaflet.fullscreen.js";
 import "leaflet-fullscreen/dist/leaflet.fullscreen.css";
 import "node_modules/leaflet-minimap/src/Control.MiniMap.js";
 import "node_modules/leaflet-minimap/src/Control.MiniMap.css";
+import "node_modules/leaflet-markers-canvas/src/leaflet-markers-canvas.js";
 import "leaflet-sidebar-v2";
 import "leaflet.mousecoordinatesystems";
 
@@ -21,7 +24,6 @@ import "leaflet-defaulticon-compatibility";
 
 import getConfig from "next/config";
 import { FlightData } from "./types";
-import { isInsideMapBound } from "helper/functions";
 import { useQuery, UseQueryResult } from "react-query";
 import { getFlights } from "api/flights";
 import { connect } from "react-redux";
@@ -113,38 +115,7 @@ const Main: FC<IProps> = ({
                             />
                         </LayersControl.BaseLayer>
                     </LayersControl>
-                    {
-                        flights.slice(0, 5).filter(flight => {
-                            const { latitude, longitude } = flight.geography;
-                            console.log({ latitude, longitude });
-                            console.log({ west, south, east, north });
-                            return true //isInsideMapBound(west, south, east, north, longitude, latitude)
-                        }).map((flight, id) => {
-                            const { latitude, longitude } = flight.geography;
-                            const { iataCode: arrivalIataCode } = flight.arrival;
-                            const { iataCode: departureIataCode } = flight.departure;
-
-                            const { icaoCode } = flight.aircraft;
-                            const { iataNumber, icaoNumber } = flight.flight;
-                            const position = { lat: latitude ?? 0, lng: longitude ?? 0 };
-                            return (
-                                <LocationMarker
-                                    key={id}
-                                    latitude={latitude}
-                                    longitude={longitude}
-                                    position={position}
-                                    center={position}
-                                    // zoom={3.5}
-                                    icaoCode={icaoCode}
-                                    icaoNumber={icaoNumber}
-                                    iataNumber={iataNumber}
-                                    arrivalIataCode={arrivalIataCode}
-                                    departureIataCode={departureIataCode}
-                                />
-                            )
-                        })
-                    }
-
+                    <LocationMarker flights={flights} />
                     <ScaleControl position="bottomleft"></ScaleControl>
                 </MapContainer>
             </main>
