@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  flight_tracker:
+    container_name: flight_tracker
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: .
+    entrypoint: ["/bin/sh","-c"]
+    command:
+    - |
+       yarn build && yarn start
+    ports:
+      - "3003:3000"
+    volumes:
+      - /app/node_modules
+      - .:/app
