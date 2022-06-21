@@ -1,12 +1,9 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useState } from "react";
 import {
     MapContainer,
     TileLayer,
     LayersControl,
     ScaleControl,
-    Marker,
-    Popup,
-    useMapEvents
 } from "react-leaflet";
 import styles from "../styles/Home.module.css";
 import LocationMarker from "./Popup";
@@ -27,48 +24,35 @@ import { FlightData } from "./types";
 import { isInsideMapBound } from "helper/functions";
 import { useQuery, UseQueryResult } from "react-query";
 import { getFlights } from "api/flights";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction, bindActionCreators } from "redux";
+import { connect } from "react-redux";
+import { IAppState } from "redux/reducers";
+import { IBounds, IMainState } from "redux/types";
+import { setBounds } from "redux/actions/mainActions";
+import ZoomLevel from "./ZoomLevel";
 
 const { publicRuntimeConfig } = getConfig();
 
 const initialZoom = 4;
 const initialLatitude = 51;
 const initialLongitude = -2;
-let west = 0;
-let east = 0;
-let south = 0;
-let north = 0;
 
-function ZoomLevel() {
-    const [zoomLevel, setZoomLevel] = useState(initialZoom);
-    const [latitude, setLatitude] = useState(initialLatitude);
-    const [longitude, setLongitude] = useState(initialLongitude);
-
-    const mapEvents = useMapEvents({
-        zoomend: () => {
-            setZoomLevel(mapEvents.getZoom());
-        },
-        moveend: () => {
-            const { lat, lng } = mapEvents.getCenter();
-            setLatitude(lat);
-            setLongitude(lng);
-        }
-    });
-
-    window.localStorage.setItem("map.zoom", zoomLevel.toString());
-    window.localStorage.setItem("map.latitude", latitude.toString());
-    window.localStorage.setItem("map.longitude", longitude.toString());
-    console.log(zoomLevel);
-    console.log("center: ", mapEvents.getCenter())
-    west = mapEvents.getBounds().getWest()
-    south = mapEvents.getBounds().getSouth()
-    east = mapEvents.getBounds().getEast()
-    north = mapEvents.getBounds().getNorth()
-    // To do: create dynamic route with variable center coordinates
-
-    return null
+interface IStateProps {
+    main?: IMainState;
 }
 
-const Main: FC = () => {
+interface IDispatchProps {
+    dispatch?: ThunkDispatch<{}, {}, AnyAction>;
+    setBounds?: (newData: IBounds) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+}
+
+type IProps = IStateProps & IDispatchProps;
+
+const Main: FC<IProps> = ({
+    main: { bounds: { west, east, south, north } },
+    dispatch
+}) => {
     // query from cache, no need to pass through props
     const { data: flights, isLoading }: UseQueryResult<FlightData[], Error> = useQuery("flights", getFlights);
     console.log({ isLoading });
@@ -127,7 +111,7 @@ const Main: FC = () => {
                         width: "100%",
                     }}
                 >
-                    <ZoomLevel />
+                    <ZoomLevel dispatch={dispatch}/>
                     <LayersControl collapsed={true} position="topright">
                         <LayersControl.BaseLayer checked={false} name="Standard Map">
                             <TileLayer
@@ -193,4 +177,19 @@ const Main: FC = () => {
     );
 };
 
-export default Main;
+const mapStateToProps = (state: IAppState): IStateProps => ({
+    main: state.main
+});
+
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+    return {
+        ...bindActionCreators(
+            {
+                setBounds
+            },
+            dispatch
+        )
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);
