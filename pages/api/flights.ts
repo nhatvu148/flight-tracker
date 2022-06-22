@@ -7,5 +7,10 @@ export default function handler(
   req: NextApiRequest,
   res: NextApiResponse<FlightData[]>
 ) {
-  res.status(200).json(data as FlightData[]);
+  const { limit } = req.query;
+  let responseData =
+    limit !== undefined
+      ? (data as FlightData[]).slice(0, Number(limit))
+      : (data as FlightData[]);
+  res.status(200).json(responseData);
 }

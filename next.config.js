@@ -9,5 +9,6 @@ module.exports = {
     mapboxToken: process.env.MAPBOX_TOKEN, // Pass through env variables
     mapTilerToken: process.env.MAPTILER_TOKEN,
     aviationToken: process.env.AVIATION_TOKEN,
+    apiURL: process.env.API_URL,
   },
 };

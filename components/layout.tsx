@@ -9,7 +9,7 @@ export default function Layout({ children }) {
     <>
       <Head>
         <title>Flight Tracker</title>
-        <meta name="description" content="Next Movies" />
+        <meta name="description" content="Flight Tracker" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <SectionNavbars />
