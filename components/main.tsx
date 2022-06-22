@@ -42,7 +42,7 @@ const Main: FC<IProps> = ({
     main: { bounds: { west, east, south, north }, mapCenter, zoom },
 }) => {
     // query from cache, no need to pass through props
-    const { data: flights, isLoading }: UseQueryResult<FlightData[], Error> = useQuery("flights", getFlights);
+    const { data: flights, isLoading }: UseQueryResult<FlightData[], Error> = useQuery("flights", () => getFlights());
     console.log({ isLoading });
 
     return (
