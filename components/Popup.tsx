@@ -22,52 +22,56 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
   const map = useMap();
 
   useEffect(() => {
-    map.invalidateSize();
+    console.log({ flights })
+    if (flights) {
+      map.invalidateSize();
 
-    // @ts-ignore
-    const markersCanvas = new L.MarkersCanvas();
-    markersCanvas.addTo(map);
+      // @ts-ignore
+      const markersCanvas = new L.MarkersCanvas();
+      markersCanvas.addTo(map);
 
-    const mouse = L.control.mouseCoordinate({ position: "bottomright" });
-    mouse.addTo(map);
+      const mouse = L.control.mouseCoordinate({ position: "bottomright" });
+      mouse.addTo(map);
 
-    const icon = L.icon({
-      iconUrl: "aircraft.svg", // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
-      iconSize: [25, 25],
-      iconAnchor: [10, 0],
-    });
+      const icon = L.icon({
+        iconUrl: "aircraft.svg", // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
+        iconSize: [25, 25],
+        iconAnchor: [10, 0],
+      });
 
-    const markers = [];
+      const markers = [];
 
-    for (let i = 0; i < flights.length; i++) {
-      const flight = flights[i];
-      const { latitude, longitude } = flight.geography;
-      const { iataCode: arrivalIataCode } = flight.arrival;
-      const { iataCode: departureIataCode } = flight.departure;
+      for (let i = 0; i < flights.length; i++) {
+        const flight = flights[i];
+        const { latitude, longitude } = flight.geography;
+        const { iataCode: arrivalIataCode } = flight.arrival;
+        const { iataCode: departureIataCode } = flight.departure;
 
-      const { icaoCode } = flight.aircraft;
-      const { iataNumber, icaoNumber } = flight.flight;
+        const { icaoCode } = flight.aircraft;
+        const { iataNumber, icaoNumber } = flight.flight;
 
-      // example: https://github.com/francoisromain/leaflet-markers-canvas/blob/master/examples/index.html
-      const marker = L.marker(
-        // [58.5578 + Math.random() * 1.8, 29.0087 + Math.random() * 3.6],
-        [latitude, longitude],
-        { icon }
-      )
-        .bindPopup(icaoNumber)
-        .on({
-          mouseover(e) {
-            this.openPopup();
-          },
-          mouseout(e) {
-            this.closePopup();
-          },
-        });
+        // example: https://github.com/francoisromain/leaflet-markers-canvas/blob/master/examples/index.html
+        const marker = L.marker(
+          // [58.5578 + Math.random() * 1.8, 29.0087 + Math.random() * 3.6],
+          [latitude, longitude],
+          { icon }
+        )
+          .bindPopup(icaoNumber)
+          .on({
+            mouseover(e) {
+              this.openPopup();
+            },
+            mouseout(e) {
+              this.closePopup();
+            },
+          });
 
-      markers.push(marker);
+        markers.push(marker);
+      }
+
+      markersCanvas.addMarkers(markers);
     }
 
-    markersCanvas.addMarkers(markers);
 
   }, [map, flights])
 

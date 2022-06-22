@@ -23,17 +23,18 @@ const Home: FC = () => {
   return <Map />;
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  const queryClient = new QueryClient();
+//// Loading large data from server side may cause issue in production --> Use client side query
+// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+//   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery("flights", getFlights);
-  // await queryClient.prefetchQuery("airports", getAirports);
+//   await queryClient.prefetchQuery("flights", getFlights);
+//   // await queryClient.prefetchQuery("airports", getAirports);
 
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-};
+//   return {
+//     props: {
+//       dehydratedState: dehydrate(queryClient),
+//     },
+//   };
+// };
 
 export default Home;
