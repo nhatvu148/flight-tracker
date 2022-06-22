@@ -8,6 +8,7 @@ export default function handler(
   res: NextApiResponse<FlightData[]>
 ) {
   const { limit } = req.query;
+  console.log(req.query);
   let responseData =
     limit !== undefined
       ? (data as FlightData[]).slice(0, Number(limit))
