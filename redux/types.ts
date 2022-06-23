@@ -1,3 +1,7 @@
+export interface IAppState {
+  main: IMainState;
+}
+
 export enum ActionTypes {
   SET_BOUNDS,
   SET_MAP_CENTER,

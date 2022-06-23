@@ -26,9 +26,10 @@ import { FlightData } from "./types";
 import { useQuery, UseQueryResult } from "react-query";
 import { getFlights } from "api/flights";
 import { connect } from "react-redux";
-import { IAppState } from "redux/reducers";
+import { IAppState } from "redux/types";
 import { IMainState } from "redux/types";
 import ZoomLevel from "./ZoomLevel";
+import { getMain } from "redux/selectors";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -119,7 +120,7 @@ const Main: FC<IProps> = ({
 };
 
 const mapStateToProps = (state: IAppState): IStateProps => ({
-    main: state.main
+    main: getMain(state)
 });
 
 export default connect(mapStateToProps)(Main);

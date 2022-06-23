@@ -4,7 +4,7 @@ import { useMapEvents } from "react-leaflet";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { IAppState } from "redux/reducers";
+import { IAppState } from "redux/types";
 import { IBounds } from "redux/types";
 import { setBounds } from "redux/actions/mainActions";
 import { LatLngBounds } from "leaflet";
@@ -74,7 +74,7 @@ const ZoomLevel: FC<any> = ({ setBounds }) => {
 }
 
 const mapStateToProps = (state: IAppState): IStateProps => ({
-    // main: state.main
+    // main: getMain(state)
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {

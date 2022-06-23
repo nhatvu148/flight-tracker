@@ -1,4 +1,4 @@
-import { FC, useMemo } from "react";
+import React, { FC, useMemo } from "react";
 import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
 import { dehydrate, QueryClient } from "react-query";
@@ -24,18 +24,18 @@ const Home: FC = () => {
 };
 
 //// Loading large data from server side may cause issue in production --> Use client side query or prefetch the first few data
-// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-//   const queryClient = new QueryClient();
+export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+  const queryClient = new QueryClient();
 
-//   // prefetch the first 100 results
-//   await queryClient.prefetchQuery("flights", () => getFlights(100));
-//   // await queryClient.prefetchQuery("airports", getAirports);
+  // prefetch the first 100 results
+  await queryClient.prefetchQuery("flights", () => getFlights(100));
+  // await queryClient.prefetchQuery("airports", getAirports);
 
-//   return {
-//     props: {
-//       dehydratedState: dehydrate(queryClient),
-//     },
-//   };
-// };
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient),
+    },
+  };
+};
 
 export default Home;
