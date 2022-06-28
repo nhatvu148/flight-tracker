@@ -3,9 +3,9 @@ import userEvent from "@testing-library/user-event";
 import ZoomLevel from "./ZoomLevel";
 
 describe("main tests", () => {
-    it("show screen", () => {
-        // render(<ZoomLevel />)
+  it("show screen", () => {
+    // render(<ZoomLevel />)
 
-        expect(1 + 1).toBe(2);
-    });
+    expect(1 + 1).toBe(2);
+  });
 });
