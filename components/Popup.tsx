@@ -33,6 +33,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
   const map = useMap();
   const markersCanvas = useRef(null);
   const currentZoom = useRef(zoom);
+  const aircraftMarkers = useRef([]);
   const airportMarkers = useRef([]);
 
   // query from cache, no need to pass through props
@@ -42,7 +43,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
   );
   const { data: airports }: UseQueryResult<AirportData[], Error> = useQuery(
     "airports",
-    getAirports
+    () => getAirports()
   );
 
   useEffect(() => {
@@ -67,17 +68,18 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
           // className: styles.rotate,
         });
 
-      const markers = [];
+      aircraftMarkers.current = [];
 
-      drawAircraftOnEachWorld(flights, icon(), markers, 0);
-      drawAircraftOnEachWorld(flights, icon(), markers, -360);
-      drawAircraftOnEachWorld(flights, icon(), markers, 360);
+      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, 0);
+      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, -360);
+      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, 360);
 
-      markersCanvas.current.addMarkers(markers);
+      markersCanvas.current.addMarkers(aircraftMarkers.current);
     }
     return () => {
       if (map && markersCanvas && markersCanvas.current) {
-        markersCanvas.current.clear();
+        // markersCanvas.current.clear();
+        markersCanvas.current.removeMarkers(aircraftMarkers.current);
       }
     };
   }, [map, flights]);
@@ -95,6 +97,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
         shadowSize: [20, 20],
       });
 
+      //// To do: when zoom is smaller than 6 => reduce the number of displayed airports
       // let airportsSlice = zoom >= 6 ? airports : airports.slice(0, 100);
       // if (currentZoom.current < 6 && zoom < currentZoom.current) {
       //   markersCanvas.current.removeMarkers(airportMarkers.current);
@@ -123,6 +126,12 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
       markersCanvas.current.addMarkers(airportMarkers.current);
       // currentZoom.current = zoom;
     }
+
+    return () => {
+      if (map && markersCanvas && markersCanvas.current) {
+        markersCanvas.current.removeMarkers(airportMarkers.current);
+      }
+    };
   }, [map, airports, markersCanvas]);
 
   // const map = useMapEvents({
