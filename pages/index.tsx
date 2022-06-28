@@ -1,28 +1,8 @@
-import React, { FC, useEffect } from "react";
-import { IAppState, IMainState } from "redux/types";
-import { getMain } from "redux/selectors";
-import { connect } from "react-redux";
-import { useRouter } from "next/router";
-import Loading from "@/Loading";
+import React, { FC } from "react";
+import PreRoute from "@/PreRoute";
 
-interface IStateProps {
-  main: IMainState;
-}
-
-type IProps = IStateProps;
-
-const Home: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
-  const router = useRouter();
-
-  useEffect(() => {
-    router.push(`/${mapCenter.lat},${mapCenter.lng}/${zoom}`);
-  }, [mapCenter, zoom, router]);
-
-  return <Loading />;
+const Home: FC = () => {
+  return <PreRoute />;
 };
 
-const mapStateToProps = (state: IAppState): IStateProps => ({
-  main: getMain(state),
-});
-
-export default connect(mapStateToProps)(Home);
+export default Home;
