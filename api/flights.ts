@@ -11,5 +11,6 @@ export const getFlights = async (limit: number = undefined) => {
       limit,
     },
   }); // http://localhost:8080/api/flights
+  console.log(response.data)
   return response.data;
 };

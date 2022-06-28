@@ -22,7 +22,6 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
   const map = useMap();
 
   useEffect(() => {
-    console.log({ flights })
     if (flights) {
       map.invalidateSize();
 
@@ -71,9 +70,7 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
 
       markersCanvas.addMarkers(markers);
     }
-
-
-  }, [map, flights])
+  }, [map, flights]);
 
   // const map = useMapEvents({
   //   locationfound(e) {

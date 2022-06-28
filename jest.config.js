@@ -1,11 +1,14 @@
-/** @type {import('@ts-jest/dist/types').InitialOptionsTsJest} */
-module.exports = {
+const nextJest = require("next/jest");
+
+const createJestConfig = nextJest({ dir: "." });
+
+const customJestConfig = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
-  globals: {
-    "ts-jest": {
-      tsconfig: "tsconfig.jest.json",
-    },
-  },
-  modulePaths: ["<rootDir>"],
+  clearMocks: true,
+  moduleDirectories: ["node_modules"],
+  setupFilesAfterEnv: ["<rootDir>/tests/setupTests.ts"],
+  testRegex: "(/__tests__/.*|(\\.|/)test)\\.[jt]sx?$",
 };
+
+module.exports = createJestConfig(customJestConfig);
