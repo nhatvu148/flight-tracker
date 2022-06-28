@@ -1,6 +1,16 @@
 import { AirportData, FlightData } from "@/types";
 declare const L: any;
 
+const initialMap = {
+  "map.latitude": 51,
+  "map.longitude": -2,
+  "map.zoom": 4,
+};
+
+const isNum = (val: number) => {
+  return !isNaN(val);
+};
+
 export const isInsideMapBound = (
   x1: number,
   y1: number,
@@ -16,6 +26,54 @@ export const isInsideMapBound = (
 
 export const checkLocalStorage = (key: string) => {
   return typeof window !== "undefined" && !!window.localStorage.getItem(key);
+};
+
+export const getInitialMapCenter = (mapParam: string): number => {
+  console.log(checkPathname(mapParam));
+
+  return (
+    checkPathname(mapParam) ??
+    (checkLocalStorage(mapParam)
+      ? JSON.parse(window.localStorage.getItem(mapParam))
+      : initialMap[mapParam])
+  );
+};
+
+export const checkPathname = (mapParam: string): number | undefined => {
+  if (typeof window !== "undefined") {
+    const pathArr = location.pathname.split("/");
+    if (pathArr.length !== 3) {
+      return undefined;
+    }
+    const latLng = pathArr[1];
+    const zoom = pathArr[2];
+    const [latitude, longitude] = latLng.split(",");
+
+    switch (mapParam) {
+      case "map.latitude":
+        if (isNum(+`${latitude}`)) {
+          return +`${latitude}`;
+        }
+        break;
+
+      case "map.longitude":
+        if (isNum(+`${longitude}`)) {
+          return +`${longitude}`;
+        }
+        break;
+
+      case "map.zoom":
+        if (isNum(+`${zoom}`)) {
+          return +`${zoom}`;
+        }
+        break;
+
+      default:
+        break;
+    }
+
+    return undefined;
+  }
 };
 
 export const getClosest = (arr: number[], goal: number) =>
