@@ -1,4 +1,5 @@
-import { FlightData } from "@/types";
+import { AirportData, FlightData } from "@/types";
+declare const L: any;
 
 export const isInsideMapBound = (
   x1: number,
@@ -22,7 +23,7 @@ export const getClosest = (arr: number[], goal: number) =>
     return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
   });
 
-export const drawOnEachWorld = (
+export const drawAircraftOnEachWorld = (
   flights: FlightData[],
   icon: any,
   markers: any,
@@ -49,6 +50,44 @@ export const drawOnEachWorld = (
       { icon: icon(getClosest(angleArr, direction)) }
     )
       .bindPopup(icaoNumber)
+      .on({
+        mouseover(e) {
+          this.openPopup();
+        },
+        mouseout(e) {
+          this.closePopup();
+        },
+      });
+
+    markers.push(marker);
+  }
+};
+
+export const drawAirportsOnEachWorld = (
+  airports: AirportData[],
+  icon: any,
+  markers: any,
+  zoom: number,
+  offset: number
+) => {
+  // let length = zoom > 4 ? 
+  for (let i = 0; i < airports.length; i++) {
+    const airport = airports[i];
+
+    const {
+      latitudeAirport,
+      longitudeAirport,
+      nameAirport,
+      codeIataAirport,
+      codeIcaoAirport,
+    } = airport;
+
+    const marker = L.marker([latitudeAirport, longitudeAirport + offset], {
+      icon,
+    })
+      .bindPopup(
+        `${nameAirport} Airport (${codeIataAirport}/${codeIcaoAirport})`
+      )
       .on({
         mouseover(e) {
           this.openPopup();

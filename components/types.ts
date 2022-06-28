@@ -45,5 +45,17 @@ export interface FlightData {
 }
 
 export interface AirportData {
-  [iata: string]: string;
+  GMT: string;
+  airportId: number;
+  codeIataAirport: string;
+  codeIataCity: string;
+  codeIcaoAirport: string;
+  codeIso2Country: string;
+  geonameId: string;
+  latitudeAirport: number;
+  longitudeAirport: number;
+  nameAirport: string;
+  nameCountry: string;
+  phone: string;
+  timezone: string;
 }

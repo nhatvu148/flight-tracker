@@ -21,13 +21,14 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 
 import getConfig from "next/config";
-import { FlightData } from "./types";
+import { AirportData, FlightData } from "./types";
 import { useQuery, UseQueryResult } from "react-query";
 import { getFlights } from "api/flights";
 import { connect } from "react-redux";
 import { IMainState, IAppState } from "redux/types";
 import ZoomLevel from "./ZoomLevel";
 import { getMain } from "redux/selectors";
+import { getAirports } from "api/airports";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -48,6 +49,10 @@ const Main: FC<IProps> = ({
   const { data: flights }: UseQueryResult<FlightData[], Error> = useQuery(
     "flights",
     () => getFlights()
+  );
+  const { data: airports }: UseQueryResult<AirportData[], Error> = useQuery(
+    "airports",
+    getAirports
   );
 
   return (
@@ -107,7 +112,7 @@ const Main: FC<IProps> = ({
               />
             </LayersControl.BaseLayer>
           </LayersControl>
-          <LocationMarker flights={flights} />
+          <LocationMarker flights={flights} airports={airports} zoom={zoom} />
           <ScaleControl position="bottomleft"></ScaleControl>
         </MapContainer>
       </main>

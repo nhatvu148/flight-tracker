@@ -29,7 +29,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
 
   // prefetch the first 100 results
   await queryClient.prefetchQuery("flights", () => getFlights(100));
-  // await queryClient.prefetchQuery("airports", getAirports);
+  await queryClient.prefetchQuery("airports", getAirports);
 
   return {
     props: {

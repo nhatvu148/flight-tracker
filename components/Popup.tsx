@@ -11,20 +11,25 @@ import { AirportData, FlightData } from "./types";
 import { useQuery, UseQueryResult } from "react-query";
 import { getAirports } from "api/airports";
 import styles from "styles/Popup.module.scss";
-import { drawOnEachWorld } from "helper/functions";
+import {
+  drawAircraftOnEachWorld,
+  drawAirportsOnEachWorld,
+} from "helper/functions";
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
 
 interface ILocationMarker {
   flights: FlightData[];
+  airports: AirportData[];
+  zoom: number;
 }
 
-const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
+const LocationMarker: FC<ILocationMarker> = ({ flights, airports, zoom }) => {
   const map = useMap();
 
   useEffect(() => {
-    if (flights) {
+    if (map && flights) {
       map.invalidateSize();
 
       // @ts-ignore
@@ -33,7 +38,6 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
 
       const mouse = L.control.mouseCoordinate({ position: "bottomright" });
       mouse.addTo(map);
-
       const icon = () => (angle: number) =>
         L.divIcon({
           iconUrl: `aircrafts-type-1/aircraft-${angle}.svg`, // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
@@ -45,13 +49,32 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
 
       const markers = [];
 
-      drawOnEachWorld(flights, icon(), markers, 0);
-      drawOnEachWorld(flights, icon(), markers, -360);
-      drawOnEachWorld(flights, icon(), markers, 360);
+      drawAircraftOnEachWorld(flights, icon(), markers, 0);
+      drawAircraftOnEachWorld(flights, icon(), markers, -360);
+      drawAircraftOnEachWorld(flights, icon(), markers, 360);
 
       markersCanvas.addMarkers(markers);
+
+      // markersCanvas.removeMarkers(markers);
     }
-  }, [map, flights]);
+
+    // if (airports) {
+    //   console.log(zoom)
+    //   const airportIcon = L.divIcon({
+    //     iconUrl: `location.png`,
+    //     iconSize: [20, 20],
+    //     iconAnchor: [10, 0],
+    //     popupAnchor: [5, 0],
+    //   });
+    //   const airportMarkers = [];
+
+    //   drawAirportsOnEachWorld(airports, airportIcon, airportMarkers, zoom, 0);
+    //   drawAirportsOnEachWorld(airports, airportIcon, airportMarkers, zoom,  -360);
+    //   drawAirportsOnEachWorld(airports, airportIcon, airportMarkers, zoom, 360);
+
+    //   markersCanvas.addMarkers(airportMarkers);
+    // }
+  }, [map, flights, airports]);
 
   // const map = useMapEvents({
   //   locationfound(e) {
