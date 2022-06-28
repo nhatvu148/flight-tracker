@@ -21,14 +21,10 @@ import "leaflet-defaulticon-compatibility/dist/leaflet-defaulticon-compatibility
 import "leaflet-defaulticon-compatibility";
 
 import getConfig from "next/config";
-import { AirportData, FlightData } from "./types";
-import { useQuery, UseQueryResult } from "react-query";
-import { getFlights } from "api/flights";
 import { connect } from "react-redux";
 import { IMainState, IAppState } from "redux/types";
 import ZoomLevel from "./ZoomLevel";
 import { getMain } from "redux/selectors";
-import { getAirports } from "api/airports";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -38,23 +34,7 @@ interface IStateProps {
 
 type IProps = IStateProps;
 
-const Main: FC<IProps> = ({
-  main: {
-    bounds: { west, east, south, north },
-    mapCenter,
-    zoom,
-  },
-}) => {
-  // query from cache, no need to pass through props
-  const { data: flights }: UseQueryResult<FlightData[], Error> = useQuery(
-    "flights",
-    () => getFlights()
-  );
-  const { data: airports }: UseQueryResult<AirportData[], Error> = useQuery(
-    "airports",
-    getAirports
-  );
-
+const Main: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -112,7 +92,7 @@ const Main: FC<IProps> = ({
               />
             </LayersControl.BaseLayer>
           </LayersControl>
-          <LocationMarker flights={flights} airports={airports} zoom={zoom} />
+          <LocationMarker />
           <ScaleControl position="bottomleft"></ScaleControl>
         </MapContainer>
       </main>

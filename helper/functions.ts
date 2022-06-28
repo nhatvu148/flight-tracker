@@ -67,10 +67,8 @@ export const drawAirportsOnEachWorld = (
   airports: AirportData[],
   icon: any,
   markers: any,
-  zoom: number,
   offset: number
 ) => {
-  // let length = zoom > 4 ? 
   for (let i = 0; i < airports.length; i++) {
     const airport = airports[i];
 
