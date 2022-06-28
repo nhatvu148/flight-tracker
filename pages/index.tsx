@@ -11,7 +11,7 @@ const Home: FC = () => {
       dynamic(
         () => import("@/main"), // replace '@components/map' with your component's location
         {
-          loading: () => <p>A map is loading</p>,
+          loading: () => <div style={{ height: "93vh", backgroundColor: "#6D6C68" }}></div>,
           ssr: false, // This line is important. It's what prevents server-side render
         }
       ),
