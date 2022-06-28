@@ -61,7 +61,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
     if (map && flights && markersCanvas && markersCanvas.current) {
       const icon = () => (angle: number) =>
         L.divIcon({
-          iconUrl: `aircrafts-type-1/aircraft-${angle}.svg`, // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
+          iconUrl: `/aircrafts-type-1/aircraft-${angle}.svg`, // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
           iconSize: [20, 20],
           iconAnchor: [10, 0],
           popupAnchor: [5, 0],
