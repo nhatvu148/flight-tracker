@@ -45,9 +45,10 @@ const Main: FC<IProps> = ({
   },
 }) => {
   // query from cache, no need to pass through props
-  const { data: flights, isLoading }: UseQueryResult<FlightData[], Error> =
-    useQuery("flights", () => getFlights());
-  console.log({ isLoading });
+  const { data: flights }: UseQueryResult<FlightData[], Error> = useQuery(
+    "flights",
+    () => getFlights()
+  );
 
   return (
     <div className={styles.container}>
@@ -67,6 +68,7 @@ const Main: FC<IProps> = ({
             height: "100%",
             width: "100%",
           }}
+          worldCopyJump={true}
         >
           <ZoomLevel />
           <LayersControl collapsed={true} position="topright">
@@ -99,6 +101,7 @@ const Main: FC<IProps> = ({
             </LayersControl.BaseLayer>
             <LayersControl.BaseLayer checked={true} name="Satellite">
               <TileLayer
+                noWrap={false}
                 attribution='&copy; <a href="https://www.maptiler.com/copyright" target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors'
                 url={`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}`}
               />
