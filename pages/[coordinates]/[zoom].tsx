@@ -42,22 +42,22 @@ const Zoom: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
 };
 
 //// Loading large data from server side may cause issue in production --> Use client side query or prefetch the first few data
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
-  // const { coordinates, zoom } = params;
-  // console.log({ coordinates, zoom });
+// export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+//   // const { coordinates, zoom } = params;
+//   // console.log({ coordinates, zoom });
 
-  const queryClient = new QueryClient();
+//   const queryClient = new QueryClient();
 
-  // prefetch the first 100 results
-  await queryClient.prefetchQuery("flights", () => getFlights(100));
-  await queryClient.prefetchQuery("airports", () => getAirports(100));
+//   // prefetch the first 100 results
+//   await queryClient.prefetchQuery("flights", () => getFlights(100));
+//   await queryClient.prefetchQuery("airports", () => getAirports(100));
 
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-  };
-};
+//   return {
+//     props: {
+//       dehydratedState: dehydrate(queryClient),
+//     },
+//   };
+// };
 
 const mapStateToProps = (state: IAppState): IStateProps => ({
   main: getMain(state),
