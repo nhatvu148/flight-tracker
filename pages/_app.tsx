@@ -5,6 +5,7 @@ import { AppProps } from "next/app";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import store from "redux/store";
+import { Provider } from "react-redux";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // useState to not share cache between users, create per life cycle
@@ -25,15 +26,17 @@ function MyApp({ Component, pageProps }: AppProps) {
     return Component.getLayout(<Component {...pageProps} />);
   }
   return (
-    <QueryClientProvider client={queryClient}>
-      <Hydrate state={pageProps.dehydratedState}>
-        <Layout>
-          <Component {...pageProps} />
-        </Layout>
-      </Hydrate>
-      <ReactQueryDevtools initialIsOpen={false} />
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <Hydrate state={pageProps.dehydratedState}>
+          <Layout>
+            <Component {...pageProps} />
+          </Layout>
+        </Hydrate>
+        <ReactQueryDevtools initialIsOpen={false} />
+      </QueryClientProvider>
+    </Provider>
   );
 }
 
-export default store.withRedux(MyApp);
+export default MyApp;

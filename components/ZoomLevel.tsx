@@ -1,91 +1,93 @@
-import { FC, useEffect, useState } from "react";
+import { FC, useEffect } from "react";
 import { useMapEvents } from "react-leaflet";
 
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { connect } from "react-redux";
-import { IAppState } from "redux/reducers";
-import { IBounds } from "redux/types";
-import { setBounds } from "redux/actions/mainActions";
-import { LatLngBounds } from "leaflet";
-
-const initialZoom = 4;
-const initialLatitude = 51;
-const initialLongitude = -2;
+import { IBounds, IAppState, IMainState, ICoordinate } from "redux/types";
+import {
+  setBounds,
+  setZoom,
+  setMapCenter,
+  setOpenLayer,
+} from "redux/actions/mainActions";
+import { getMain } from "redux/selectors";
 
 interface IStateProps {
-    // main: IMainState;
+  main?: IMainState;
 }
 
 interface IDispatchProps {
-    dispatch?: ThunkDispatch<{}, {}, AnyAction>;
-    setBounds: (newData: IBounds) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+  dispatch?: ThunkDispatch<{}, {}, AnyAction>;
+  setBounds: (
+    newData: IBounds
+  ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+  setZoom: (
+    newData: number
+  ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+  setMapCenter: (
+    newData: ICoordinate
+  ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+  setOpenLayer: (
+    newData: string
+  ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
 }
 
 type IProps = IStateProps & IDispatchProps;
 
-const ZoomLevel: FC<any> = ({ setBounds }) => {
-    const [zoomLevel, setZoomLevel] = useState(initialZoom);
-    const [localBounds, setLocalBounds] = useState<LatLngBounds>(null);
-    const [latitude, setLatitude] = useState(initialLatitude);
-    const [longitude, setLongitude] = useState(initialLongitude);
+const ZoomLevel: FC<IProps> = ({
+  setBounds,
+  setZoom,
+  setMapCenter,
+  setOpenLayer,
+}) => {
+  const mapEvents = useMapEvents({
+    zoomend: () => {
+      const zoom = mapEvents.getZoom();
+      setZoom(zoom);
+      window.localStorage.setItem("map.zoom", zoom.toString());
+    },
+    moveend: () => {
+      const localBounds = mapEvents.getBounds();
+      setBounds({
+        west: localBounds.getWest(),
+        east: localBounds.getEast(),
+        south: localBounds.getSouth(),
+        north: localBounds.getNorth(),
+      });
 
-    const mapEvents = useMapEvents({
-        zoomend: () => {
-            setZoomLevel(mapEvents.getZoom());
-        },
-        moveend: () => {
-            setLocalBounds(mapEvents.getBounds());
-            const { lat, lng } = mapEvents.getCenter();
-            setLatitude(lat);
-            setLongitude(lng);
-        }
-    });
+      const { lat, lng } = mapEvents.getCenter();
+      setMapCenter({ lat, lng });
+      window.localStorage.setItem("map.latitude", lat.toString());
+      window.localStorage.setItem("map.longitude", lng.toString());
+    },
+    baselayerchange: (e) => {
+      setOpenLayer(e.name);
+      window.localStorage.setItem("openLayer", e.name);
+    },
+  });
 
-    useEffect(() => {
-        window.localStorage.setItem("map.latitude", latitude.toString());
-        window.localStorage.setItem("map.longitude", longitude.toString());
-    }, [latitude, longitude])
+  // To do: create dynamic route with variable center coordinates
 
-
-    useEffect(() => {
-        window.localStorage.setItem("map.zoom", zoomLevel.toString());
-        if (localBounds !== null) {
-            // dispatch({
-            //     type: ActionTypes.SET_BOUNDS,
-            //     payload: {
-            //         west: localBounds.getWest(),
-            //         east: localBounds.getEast(),
-            //         south: localBounds.getSouth(),
-            //         north: localBounds.getNorth(),
-            //     },
-            // });
-            setBounds({
-                west: localBounds.getWest(),
-                east: localBounds.getEast(),
-                south: localBounds.getSouth(),
-                north: localBounds.getNorth(),
-            });
-        }
-    }, [zoomLevel, localBounds])
-    // To do: create dynamic route with variable center coordinates
-
-    return null
-}
+  return null;
+};
 
 const mapStateToProps = (state: IAppState): IStateProps => ({
-    // main: state.main
+  main: getMain(state),
 });
 
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
-    return {
-        ...bindActionCreators(
-            {
-                setBounds
-            },
-            dispatch
-        )
-    };
+  return {
+    ...bindActionCreators(
+      {
+        setBounds,
+        setZoom,
+        setMapCenter,
+        setOpenLayer,
+      },
+      dispatch
+    ),
+  };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ZoomLevel);

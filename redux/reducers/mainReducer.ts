@@ -1,9 +1,5 @@
-import { checkLocalStorage } from "helper/functions";
+import { getInitial, getInitialMapCenter } from "helpers";
 import { ActionTypes, IMainState, TMainAction } from "redux/types";
-
-const initialZoom = 4;
-const initialLatitude = 51;
-const initialLongitude = -2;
 
 const initialState: IMainState = {
   bounds: {
@@ -13,20 +9,21 @@ const initialState: IMainState = {
     north: 0,
   },
   mapCenter: {
-    lat: checkLocalStorage("map.latitude")
-      ? JSON.parse(window.localStorage.getItem("map.latitude"))
-      : initialLatitude,
-    lng: checkLocalStorage("map.longitude")
-      ? JSON.parse(window.localStorage.getItem("map.longitude"))
-      : initialLongitude,
+    lat: getInitialMapCenter("map.latitude"),
+    lng: getInitialMapCenter("map.longitude"),
   },
-  zoom: checkLocalStorage("map.zoom")
-    ? JSON.parse(window.localStorage.getItem("map.zoom"))
-    : initialZoom,
+  zoom: getInitialMapCenter("map.zoom"),
+  openLayer: getInitial("openLayer"),
 };
 
 const mainReducer = (state = initialState, action: TMainAction) => {
   switch (action.type) {
+    case ActionTypes.SET_OPEN_LAYER:
+      return {
+        ...state,
+        openLayer: action.payload,
+      };
+
     case ActionTypes.SET_BOUNDS:
       return {
         ...state,

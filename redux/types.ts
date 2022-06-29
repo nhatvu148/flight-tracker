@@ -1,24 +1,16 @@
+export interface IAppState {
+  main: IMainState;
+}
+
 export enum ActionTypes {
   SET_BOUNDS,
   SET_MAP_CENTER,
   SET_ZOOM,
+  SET_OPEN_LAYER,
 }
 
 export enum DownloadType {
   UNKNOWN,
-  STRESS_ACC,
-  GYRO,
-  REPORT,
-  ROUTE_MAP,
-  MS_MOMENT,
-  MW_MOMENT,
-  MS_MW_MOMENT,
-  WEATHER_WAVE_HEIGHT,
-  WEATHER_WAVE_PERIOD,
-  WEATHER_WAVE_DIRECTION,
-  WEATHER_MAP,
-  STRESS_ACC_SD,
-  GYRO_SD,
 }
 
 export interface IBounds {
@@ -37,9 +29,11 @@ export interface IMainState {
   bounds: IBounds;
   mapCenter: ICoordinate;
   zoom: number;
+  openLayer: string;
 }
 
 export type TMainAction =
   | { type: ActionTypes.SET_BOUNDS; payload: IBounds }
   | { type: ActionTypes.SET_MAP_CENTER; payload: ICoordinate }
+  | { type: ActionTypes.SET_OPEN_LAYER; payload: string }
   | { type: ActionTypes.SET_ZOOM; payload: number };
