@@ -5,11 +5,16 @@ import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { connect } from "react-redux";
 import { IBounds, IAppState, IMainState, ICoordinate } from "redux/types";
-import { setBounds, setZoom, setMapCenter } from "redux/actions/mainActions";
+import {
+  setBounds,
+  setZoom,
+  setMapCenter,
+  setOpenLayer,
+} from "redux/actions/mainActions";
 import { getMain } from "redux/selectors";
 
 interface IStateProps {
-  main: IMainState;
+  main?: IMainState;
 }
 
 interface IDispatchProps {
@@ -23,19 +28,24 @@ interface IDispatchProps {
   setMapCenter: (
     newData: ICoordinate
   ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+  setOpenLayer: (
+    newData: string
+  ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
 }
 
 type IProps = IStateProps & IDispatchProps;
 
 const ZoomLevel: FC<IProps> = ({
-  main: { zoom, mapCenter },
   setBounds,
   setZoom,
   setMapCenter,
+  setOpenLayer,
 }) => {
   const mapEvents = useMapEvents({
     zoomend: () => {
-      setZoom(mapEvents.getZoom());
+      const zoom = mapEvents.getZoom();
+      setZoom(zoom);
+      window.localStorage.setItem("map.zoom", zoom.toString());
     },
     moveend: () => {
       const localBounds = mapEvents.getBounds();
@@ -48,18 +58,15 @@ const ZoomLevel: FC<IProps> = ({
 
       const { lat, lng } = mapEvents.getCenter();
       setMapCenter({ lat, lng });
+      window.localStorage.setItem("map.latitude", lat.toString());
+      window.localStorage.setItem("map.longitude", lng.toString());
     },
-    baselayerchange: () => {},
+    baselayerchange: (e) => {
+      setOpenLayer(e.name);
+      window.localStorage.setItem("openLayer", e.name);
+    },
   });
 
-  useEffect(() => {
-    window.localStorage.setItem("map.latitude", mapCenter.lat.toString());
-    window.localStorage.setItem("map.longitude", mapCenter.lng.toString());
-  }, [mapCenter]);
-
-  useEffect(() => {
-    window.localStorage.setItem("map.zoom", zoom.toString());
-  }, [zoom]);
   // To do: create dynamic route with variable center coordinates
 
   return null;
@@ -76,6 +83,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
         setBounds,
         setZoom,
         setMapCenter,
+        setOpenLayer,
       },
       dispatch
     ),

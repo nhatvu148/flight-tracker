@@ -36,7 +36,7 @@ interface IStateProps {
 
 type IProps = IStateProps;
 
-const Main: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
+const Main: FC<IProps> = ({ main: { mapCenter, zoom, openLayer } }) => {
   return (
     <div className={styles.container}>
       <main className={styles.main}>
@@ -66,7 +66,7 @@ const Main: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
             {layerMap(publicRuntimeConfig).map((layer, id: number) => {
               return (
                 <LayersControl.BaseLayer
-                  checked={layer.checked}
+                  checked={layer.name === openLayer}
                   name={layer.name}
                   key={id}
                 >

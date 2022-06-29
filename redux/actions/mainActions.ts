@@ -38,11 +38,11 @@ export const setZoom =
     }
   };
 
-export const setOpenLayers =
-  (newData: boolean[]) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+export const setOpenLayer =
+  (newData: string) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
     try {
       dispatch({
-        type: ActionTypes.SET_OPEN_LAYERS,
+        type: ActionTypes.SET_OPEN_LAYER,
         payload: newData,
       });
     } catch (error) {

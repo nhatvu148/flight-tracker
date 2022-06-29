@@ -1,10 +1,11 @@
 import { AirportData, FlightData } from "@/types";
 declare const L: any;
 
-const initialMap = {
+export const initialMap = {
   "map.latitude": 51,
   "map.longitude": -2,
   "map.zoom": 4,
+  openLayer: "USImageryTopo",
 };
 
 const isNum = (val: number) => {
@@ -28,13 +29,16 @@ export const checkLocalStorage = (key: string) => {
   return typeof window !== "undefined" && !!window.localStorage.getItem(key);
 };
 
+export const getInitial = (input: string) => {
+  return checkLocalStorage(input)
+    ? window.localStorage.getItem(input)
+    : initialMap[input];
+};
+
 export const getInitialMapCenter = (mapParam: string): number => {
   return (
     // https://javascript.info/nullish-coalescing-operator
-    checkPathname(mapParam) ??
-    (checkLocalStorage(mapParam)
-      ? JSON.parse(window.localStorage.getItem(mapParam))
-      : initialMap[mapParam])
+    checkPathname(mapParam) ?? getInitial(mapParam)
   );
 };
 
@@ -157,59 +161,53 @@ export const drawAirportsOnEachWorld = (
 };
 
 export const layerMap = (publicRuntimeConfig: any) => [
+  // https://stackoverflow.com/questions/62923809/list-of-all-available-tile-layers-for-leaflet
+  // https://leaflet-extras.github.io/leaflet-providers/preview/
   {
     name: "Mapnik",
     attribution:
       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-    checked: false,
   },
   {
     name: "OpenTopoMap",
     attribution:
       'Map data: &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, <a href="http://viewfinderpanoramas.org">SRTM</a> | Map style: &copy; <a href="https://opentopomap.org">OpenTopoMap</a> (<a href="https://creativecommons.org/licenses/by-sa/3.0/">CC-BY-SA</a>)',
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
-    checked: false,
   },
   {
     name: "USImageryTopo",
     attribution:
       'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>',
     url: `https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}`,
-    checked: true,
   },
   {
     name: "Satellite",
     attribution:
       '&copy; <a href="https://www.maptiler.com/copyright" target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors',
     url: `https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}`,
-    checked: false,
   },
   {
     name: "Watercolor",
     attribution:
       'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     url: `https://stamen-tiles-{s}.a.ssl.fastly.net/watercolor/{z}/{x}/{y}.jpg`,
-    checked: false,
   },
   {
     name: "TerrainBackground",
     attribution:
       'Map tiles by <a href="http://stamen.com">Stamen Design</a>, <a href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a> &mdash; Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     url: `https://stamen-tiles-{s}.a.ssl.fastly.net/terrain-background/{z}/{x}/{y}{r}.png`,
-    checked: false,
   },
   {
     name: "WorldStreetMap",
     attribution:
       "Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012",
     url: `https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}`,
-    checked: false,
   },
   // {
   //   name: "Mapbox Map",
   //   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>',
   //   url: `https://api.mapbox.com/styles/v1/nhatvu148/ckmf0vdp2hj0817lkwm8z7a50/tiles/512/{z}/{x}/{y}@2x?access_token=${publicRuntimeConfig.mapboxToken}`,
-  //   checked: false,
   // }
 ];
