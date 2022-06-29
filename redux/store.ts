@@ -1,11 +1,22 @@
-import { configureStore } from "@reduxjs/toolkit";
-import mainReducer from "redux/reducers/mainReducer";
+import { createStore, applyMiddleware } from "redux";
+import { composeWithDevTools } from "redux-devtools-extension";
+import thunk from "redux-thunk";
+import { createLogger } from "redux-logger";
+import rootReducer from "redux/reducers";
 
-const store = configureStore({
-  reducer: {
-    // Define a top-level state field named `todos`, handled by `todosReducer`
-    main: mainReducer,
-  },
-});
+const middleware: any = [thunk];
+
+if (process.env.NODE_ENV === `development`) {
+  const logger = createLogger({
+    // ...options
+  });
+
+  // middleware.push(logger);
+}
+
+const store = createStore(
+  rootReducer,
+  composeWithDevTools(applyMiddleware(...middleware))
+);
 
 export default store;
