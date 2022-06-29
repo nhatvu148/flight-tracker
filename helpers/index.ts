@@ -8,6 +8,8 @@ export const initialMap = {
   openLayer: "Satellite",
 };
 
+export const isProd = process.env.NODE_ENV === "production";
+
 const isNum = (val: number) => {
   return !isNaN(val);
 };

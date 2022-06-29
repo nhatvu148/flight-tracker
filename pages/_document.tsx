@@ -2,6 +2,9 @@ import React from "react";
 import Document, { Html, Head, Main, NextScript } from "next/document";
 import { ServerStyleSheets } from "@material-ui/styles"; // works with @material-ui/core/styles, if you prefer to use it.
 import Script from "next/script";
+import { isProd } from "helpers";
+
+const gtag = `https://www.googletagmanager.com/gtag/js?id=${process.env.NEXT_PUBLIC_GA_ID}`;
 
 export default class MyDocument extends Document {
   render() {
@@ -26,6 +29,23 @@ export default class MyDocument extends Document {
             href="https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css"
             rel="stylesheet"
           />
+          {isProd && (
+            <>
+              <script async src={gtag} />
+              <script
+                dangerouslySetInnerHTML={{
+                  __html: `
+                window.dataLayer = window.dataLayer || [];
+                function gtag(){dataLayer.push(arguments);}
+                gtag('js', new Date());
+                gtag('config', '${process.env.NEXT_PUBLIC_GA_ID}', {
+                  page_path: window.location.pathname,
+                });
+              `,
+                }}
+              />
+            </>
+          )}
         </Head>
         <body>
           <Main />

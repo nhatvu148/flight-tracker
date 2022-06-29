@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "styles/globals.css";
 import Layout from "@/layout";
 import { AppProps } from "next/app";
@@ -6,6 +6,8 @@ import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
 import store from "redux/store";
 import { Provider } from "react-redux";
+import { useRouter } from "next/router";
+import { isProd } from "helpers";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // useState to not share cache between users, create per life cycle
@@ -19,6 +21,22 @@ function MyApp({ Component, pageProps }: AppProps) {
         },
       })
   );
+
+  const router = useRouter();
+  useEffect(() => {
+    const handleRouteChange = (url) => {
+      if (isProd) {
+        // @ts-ignore
+        window.gtag("config", process.env.NEXT_PUBLIC_GA_ID, {
+          page_path: url,
+        });
+      }
+    };
+    router.events.on("routeChangeComplete", handleRouteChange);
+    return () => {
+      router.events.off("routeChangeComplete", handleRouteChange);
+    };
+  }, [router.events]);
 
   // @ts-ignore
   if (Component.getLayout) {
