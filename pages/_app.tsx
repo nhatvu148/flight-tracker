@@ -4,7 +4,7 @@ import Layout from "@/layout";
 import { AppProps } from "next/app";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
-import store from "@/store";
+import store from "redux/store";
 import { Provider } from "react-redux";
 
 function MyApp({ Component, pageProps }: AppProps) {
