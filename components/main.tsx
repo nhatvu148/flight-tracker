@@ -4,6 +4,7 @@ import {
   TileLayer,
   LayersControl,
   ScaleControl,
+  ZoomControl,
 } from "react-leaflet";
 import styles from "../styles/Home.module.css";
 import LocationMarker from "./Popup";
@@ -25,6 +26,7 @@ import { connect } from "react-redux";
 import { IMainState, IAppState } from "redux/types";
 import ZoomLevel from "./ZoomLevel";
 import { getMain } from "redux/selectors";
+import { layerMap } from "helpers";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -46,6 +48,7 @@ const Main: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
           minZoom={2}
           maxZoom={15}
           zoomControl={false}
+          worldCopyJump={true}
           id="mapcontainer"
           style={{
             position: "fixed",
@@ -53,47 +56,28 @@ const Main: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
             height: "100%",
             width: "100%",
           }}
-          worldCopyJump={true}
         >
           <ZoomLevel />
-          <LayersControl collapsed={true} position="topright">
-            <LayersControl.BaseLayer checked={false} name="Mapbox Map">
-              <TileLayer
-                url={`https://api.mapbox.com/styles/v1/nhatvu148/ckmf0vdp2hj0817lkwm8z7a50/tiles/512/{z}/{x}/{y}@2x?access_token=${publicRuntimeConfig.mapboxToken}`}
-                attribution='Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery &copy; <a href="https://www.mapbox.com/">Mapbox</a>'
-              />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={false} name="Standard Map">
-              <TileLayer
-                attribution='&copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors'
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={false} name="Dark Map">
-              <TileLayer
-                attribution='&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>, &copy;<a href="https://carto.com/attributions">CARTO</a>'
-                url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-              />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer
-              checked={false}
-              name="Satellite Mediumres 2016"
-            >
-              <TileLayer
-                attribution='&copy; <a href="https://www.maptiler.com/copyright"target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-                url={`https://api.maptiler.com/tiles/satellite-mediumres/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}`}
-              />
-            </LayersControl.BaseLayer>
-            <LayersControl.BaseLayer checked={true} name="Satellite">
-              <TileLayer
-                noWrap={false}
-                attribution='&copy; <a href="https://www.maptiler.com/copyright" target="_blank">MapTiler</a> &copy; <a href="http://osm.org/copyright" target="_blank">OpenStreetMap</a> contributors'
-                url={`https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=${publicRuntimeConfig.mapTilerToken}`}
-              />
-            </LayersControl.BaseLayer>
+          <LayersControl
+            collapsed={true}
+            position="bottomright"
+            sortLayers={true}
+          >
+            {layerMap(publicRuntimeConfig).map((layer, id: number) => {
+              return (
+                <LayersControl.BaseLayer
+                  checked={layer.checked}
+                  name={layer.name}
+                  key={id}
+                >
+                  <TileLayer attribution={layer.attribution} url={layer.url} />
+                </LayersControl.BaseLayer>
+              );
+            })}
           </LayersControl>
           <LocationMarker />
-          <ScaleControl position="bottomleft"></ScaleControl>
+          <ZoomControl position="bottomright" />
+          <ScaleControl position="bottomleft" />
         </MapContainer>
       </main>
     </div>

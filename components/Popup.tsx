@@ -11,10 +11,7 @@ import { AirportData, FlightData } from "./types";
 import { useQuery, UseQueryResult } from "react-query";
 import { getAirports } from "api/airports";
 import styles from "styles/Popup.module.scss";
-import {
-  drawAircraftOnEachWorld,
-  drawAirportsOnEachWorld,
-} from "helper/functions";
+import { drawAircraftOnEachWorld, drawAirportsOnEachWorld } from "helpers";
 import { IAppState, IMainState } from "redux/types";
 import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
@@ -54,7 +51,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
       markersCanvas.current = new L.MarkersCanvas();
       markersCanvas.current.addTo(map);
 
-      const mouse = L.control.mouseCoordinate({ position: "bottomright" });
+      const mouse = L.control.mouseCoordinate({ position: "bottomleft" });
       mouse.addTo(map);
     }
 

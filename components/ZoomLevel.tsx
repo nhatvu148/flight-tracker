@@ -49,6 +49,7 @@ const ZoomLevel: FC<IProps> = ({
       const { lat, lng } = mapEvents.getCenter();
       setMapCenter({ lat, lng });
     },
+    baselayerchange: () => {},
   });
 
   useEffect(() => {

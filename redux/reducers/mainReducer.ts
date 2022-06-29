@@ -1,4 +1,4 @@
-import { getInitialMapCenter } from "helper/functions";
+import { getInitialMapCenter } from "helpers";
 import { ActionTypes, IMainState, TMainAction } from "redux/types";
 
 const initialState: IMainState = {
@@ -13,10 +13,17 @@ const initialState: IMainState = {
     lng: getInitialMapCenter("map.longitude"),
   },
   zoom: getInitialMapCenter("map.zoom"),
+  openLayers: [false, false, false, true],
 };
 
 const mainReducer = (state = initialState, action: TMainAction) => {
   switch (action.type) {
+    case ActionTypes.SET_OPEN_LAYERS:
+      return {
+        ...state,
+        openLayers: action.payload,
+      };
+
     case ActionTypes.SET_BOUNDS:
       return {
         ...state,
