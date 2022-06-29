@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo } from "react";
-import type { GetServerSideProps } from "next";
+import type { GetStaticPaths, GetStaticProps } from "next";
 import dynamic from "next/dynamic";
 import { dehydrate, QueryClient } from "react-query";
 import { getFlights } from "api/flights";
@@ -41,8 +41,20 @@ const Zoom: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
   return <Map />;
 };
 
-//// Loading large data from server side may cause issue in production --> Use client side query or prefetch the first few data
-export const getServerSideProps: GetServerSideProps = async ({ params }) => {
+export const getStaticPaths: GetStaticPaths = async () => {
+  const data = [];
+  return {
+    paths: data.map(() => {
+      return {
+        params: {},
+      };
+    }),
+    fallback: true,
+  };
+};
+
+//// getServerSideProps: Loading large data from server side may cause issue in production --> Use client side query or getStaticProps
+export const getStaticProps: GetStaticProps = async ({ params }) => {
   // const { coordinates, zoom } = params;
   // console.log({ coordinates, zoom });
 
@@ -56,6 +68,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
     props: {
       dehydratedState: dehydrate(queryClient),
     },
+    revalidate: 1,
   };
 };
 
