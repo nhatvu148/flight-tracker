@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useRef } from "react";
 declare const L: any;
 import { useMap, useMapEvents } from "react-leaflet";
 import { Icon } from "leaflet";
@@ -10,70 +10,126 @@ import javascriptStyles from "styles/jss/nextjs-material-kit-pro/pages/component
 import { AirportData, FlightData } from "./types";
 import { useQuery, UseQueryResult } from "react-query";
 import { getAirports } from "api/airports";
+import styles from "styles/Popup.module.scss";
+import { drawAircraftOnEachWorld, drawAirportsOnEachWorld } from "helpers";
+import { IAppState, IMainState } from "redux/types";
+import { getMain } from "redux/selectors";
+import { connect } from "react-redux";
+import { getFlights } from "api/flights";
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
 
-interface ILocationMarker {
-  flights: FlightData[];
+interface IStateProps {
+  main: IMainState;
 }
 
-const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
+type IProps = IStateProps;
+
+const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
   const map = useMap();
+  const markersCanvas = useRef(null);
+  const currentZoom = useRef(zoom);
+  const aircraftMarkers = useRef([]);
+  const airportMarkers = useRef([]);
+
+  // query from cache, no need to pass through props
+  const { data: flights }: UseQueryResult<FlightData[], Error> = useQuery(
+    "flights",
+    () => getFlights()
+  );
+  const { data: airports }: UseQueryResult<AirportData[], Error> = useQuery(
+    "airports",
+    () => getAirports()
+  );
 
   useEffect(() => {
-    console.log({ flights })
-    if (flights) {
+    if (markersCanvas.current === null) {
       map.invalidateSize();
 
       // @ts-ignore
-      const markersCanvas = new L.MarkersCanvas();
-      markersCanvas.addTo(map);
+      markersCanvas.current = new L.MarkersCanvas();
+      markersCanvas.current.addTo(map);
 
-      const mouse = L.control.mouseCoordinate({ position: "bottomright" });
+      const mouse = L.control.mouseCoordinate({ position: "bottomleft" });
       mouse.addTo(map);
-
-      const icon = L.icon({
-        iconUrl: "aircraft.svg", // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
-        iconSize: [25, 25],
-        iconAnchor: [10, 0],
-      });
-
-      const markers = [];
-
-      for (let i = 0; i < flights.length; i++) {
-        const flight = flights[i];
-        const { latitude, longitude } = flight.geography;
-        const { iataCode: arrivalIataCode } = flight.arrival;
-        const { iataCode: departureIataCode } = flight.departure;
-
-        const { icaoCode } = flight.aircraft;
-        const { iataNumber, icaoNumber } = flight.flight;
-
-        // example: https://github.com/francoisromain/leaflet-markers-canvas/blob/master/examples/index.html
-        const marker = L.marker(
-          // [58.5578 + Math.random() * 1.8, 29.0087 + Math.random() * 3.6],
-          [latitude, longitude],
-          { icon }
-        )
-          .bindPopup(icaoNumber)
-          .on({
-            mouseover(e) {
-              this.openPopup();
-            },
-            mouseout(e) {
-              this.closePopup();
-            },
-          });
-
-        markers.push(marker);
-      }
-
-      markersCanvas.addMarkers(markers);
     }
 
+    if (map && flights && markersCanvas && markersCanvas.current) {
+      const icon = () => (angle: number) =>
+        L.divIcon({
+          iconUrl: `/aircrafts-type-1/aircraft-${angle}.svg`, // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
+          iconSize: [20, 20],
+          iconAnchor: [10, 0],
+          popupAnchor: [5, 0],
+          // className: styles.rotate,
+        });
 
-  }, [map, flights])
+      aircraftMarkers.current = [];
+
+      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, 0);
+      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, -360);
+      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, 360);
+
+      markersCanvas.current.addMarkers(aircraftMarkers.current);
+    }
+    return () => {
+      if (map && markersCanvas && markersCanvas.current) {
+        // markersCanvas.current.clear();
+        markersCanvas.current.removeMarkers(aircraftMarkers.current);
+      }
+    };
+  }, [map, flights]);
+
+  useEffect(() => {
+    if (map && airports && markersCanvas && markersCanvas.current) {
+      const airportIcon = L.divIcon({
+        // https://github.com/pointhi/leaflet-color-markers
+        iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png`,
+        shadowUrl:
+          "https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png",
+        iconSize: [12, 20],
+        iconAnchor: [6, 20],
+        popupAnchor: [1, -17],
+        shadowSize: [20, 20],
+      });
+
+      //// To do: when zoom is smaller than 6 => reduce the number of displayed airports
+      // let airportsSlice = zoom >= 6 ? airports : airports.slice(0, 100);
+      // if (currentZoom.current < 6 && zoom < currentZoom.current) {
+      //   markersCanvas.current.removeMarkers(airportMarkers.current);
+      // }
+
+      let airportsSlice = airports;
+      drawAirportsOnEachWorld(
+        airportsSlice,
+        airportIcon,
+        airportMarkers.current,
+        0
+      );
+      drawAirportsOnEachWorld(
+        airportsSlice,
+        airportIcon,
+        airportMarkers.current,
+        -360
+      );
+      drawAirportsOnEachWorld(
+        airportsSlice,
+        airportIcon,
+        airportMarkers.current,
+        360
+      );
+
+      markersCanvas.current.addMarkers(airportMarkers.current);
+      // currentZoom.current = zoom;
+    }
+
+    return () => {
+      if (map && markersCanvas && markersCanvas.current) {
+        markersCanvas.current.removeMarkers(airportMarkers.current);
+      }
+    };
+  }, [map, airports, markersCanvas]);
 
   // const map = useMapEvents({
   //   locationfound(e) {
@@ -82,7 +138,6 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
   //   },
   // });
   const classes = useStyles();
-  // const { data: airports }: UseQueryResult<AirportData, Error> = useQuery("airportås", getAirports);
 
   return null;
   // position === null ? null : (
@@ -125,4 +180,8 @@ const LocationMarker: FC<ILocationMarker> = ({ flights }) => {
   // );
 };
 
-export default LocationMarker;
+const mapStateToProps = (state: IAppState): IStateProps => ({
+  main: getMain(state),
+});
+
+export default connect(mapStateToProps)(LocationMarker);

@@ -1,8 +1,15 @@
 import axios from "axios";
 import getConfig from "next/config";
-const { publicRuntimeConfig } = getConfig();
 
-export const getAirports = async () => {
-  const response = await axios.get(`http://localhost:8080/api/airports`);
+export const getAirports = async (limit: number = undefined) => {
+  const { publicRuntimeConfig } = getConfig();
+  const response = await axios.get(
+    `${publicRuntimeConfig.apiURL}/api/airports`,
+    {
+      params: {
+        limit,
+      },
+    }
+  );
   return response.data;
 };

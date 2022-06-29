@@ -37,44 +37,55 @@ const SectionNavbars = () => {
               <Button
                 className={classes.navLink}
                 onClick={(e) => {
-                  // router.push("/now-playing");
+                  router.push("/flights");
                 }}
                 color="transparent"
               >
-                Now Playing
+                Flights
               </Button>
             </ListItem>
             <ListItem className={classes.listItem}>
               <Button
                 className={classes.navLink}
                 onClick={(e) => {
-                  // router.push("/popular");
+                  router.push("/aircraft");
                 }}
                 color="transparent"
               >
-                Popular
+                Aircraft
               </Button>
             </ListItem>
             <ListItem className={classes.listItem}>
               <Button
                 className={classes.navLink}
                 onClick={(e) => {
-                  // router.push("/top-rated");
+                  router.push("/airports");
                 }}
                 color="transparent"
               >
-                Top Rated
+                Airports
               </Button>
             </ListItem>
             <ListItem className={classes.listItem}>
               <Button
                 className={classes.navLink}
                 onClick={(e) => {
-                  // router.push("/upcoming");
+                  router.push("/airlines");
                 }}
                 color="transparent"
               >
-                Upcoming
+                Airlines
+              </Button>
+            </ListItem>
+            <ListItem className={classes.listItem}>
+              <Button
+                className={classes.navLink}
+                onClick={(e) => {
+                  router.push("/about");
+                }}
+                color="transparent"
+              >
+                About
               </Button>
             </ListItem>
           </List>

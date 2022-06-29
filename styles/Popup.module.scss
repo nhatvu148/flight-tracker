@@ -1,0 +1,16 @@
+$color: red;
+$value: 180deg;
+
+.rotate {
+    background: $color !important;
+    transform: rotate(90deg);
+    /* CSS3 */
+    -moz-transform: rotate(90deg);
+    /* Firefox */
+    -webkit-transform: rotate(90deg);
+    /* Webkit */
+    -o-transform: rotate(90deg);
+    /* Opera */
+    -ms-transform: rotate(90deg);
+    /* IE 9 */
+}
