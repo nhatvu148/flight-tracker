@@ -5,7 +5,7 @@ export const initialMap = {
   "map.latitude": 51,
   "map.longitude": -2,
   "map.zoom": 4,
-  openLayer: "USImageryTopo",
+  openLayer: "Satellite",
 };
 
 const isNum = (val: number) => {
@@ -176,10 +176,10 @@ export const layerMap = (publicRuntimeConfig: any) => [
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
   },
   {
-    name: "USImageryTopo",
+    name: "AlidadeSmoothDark",
     attribution:
-      'Tiles courtesy of the <a href="https://usgs.gov/">U.S. Geological Survey</a>',
-    url: `https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}`,
+      '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+    url: `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png`,
   },
   {
     name: "Satellite",
