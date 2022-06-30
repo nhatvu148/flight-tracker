@@ -5,7 +5,7 @@ export const initialMap = {
   "map.latitude": 51,
   "map.longitude": -2,
   "map.zoom": 4,
-  openLayer: "Satellite",
+  openLayer: "Outdoors",
 };
 
 export const isProd = process.env.NODE_ENV === "production";
@@ -166,10 +166,10 @@ export const layerMap = (publicRuntimeConfig: any) => [
   // https://stackoverflow.com/questions/62923809/list-of-all-available-tile-layers-for-leaflet
   // https://leaflet-extras.github.io/leaflet-providers/preview/
   {
-    name: "Mapnik",
+    name: "Outdoors",
     attribution:
-      '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-    url: "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+      '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+    url: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
   },
   {
     name: "OpenTopoMap",
@@ -178,10 +178,10 @@ export const layerMap = (publicRuntimeConfig: any) => [
     url: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",
   },
   {
-    name: "AlidadeSmoothDark",
+    name: "AlidadeSmooth",
     attribution:
       '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
-    url: `https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png`,
+    url: `https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png`,
   },
   {
     name: "Satellite",
