@@ -3,7 +3,7 @@ import { IAppState, IMainState } from "redux/types";
 import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
 import { useRouter } from "next/router";
-import Loading from "@/Loading";
+import Loading from "components/Loading";
 
 interface IStateProps {
   main: IMainState;

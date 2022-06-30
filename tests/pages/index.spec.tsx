@@ -3,7 +3,7 @@ import { render } from "@testing-library/react";
 import Home, { getServerSideProps } from "../../pages/index";
 
 import { getFlights } from "../../api/flights";
-import { FlightData } from "@/types";
+import { FlightData } from "components/types";
 
 describe("The home page", () => {
   it("getServerSideProps returns the correct list of todos from the api", async () => {

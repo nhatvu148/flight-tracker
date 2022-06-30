@@ -4,7 +4,7 @@ import dynamic from "next/dynamic";
 import { dehydrate, QueryClient } from "react-query";
 import { getFlights } from "api/flights";
 import { getAirports } from "api/airports";
-import Loading from "@/Loading";
+import Loading from "components/Loading";
 import { connect } from "react-redux";
 import { getMain } from "redux/selectors";
 import { IAppState, IMainState } from "redux/types";
@@ -27,7 +27,7 @@ const Zoom: FC<IProps> = ({ main: { mapCenter, zoom } }) => {
   const Map = useMemo(
     () =>
       dynamic(
-        () => import("@/main"), // replace '@components/map' with your component's location
+        () => import("components/main"), // replace '@components/map' with your component's location
         {
           loading: () => <Loading />,
           ssr: false, // This line is important. It's what prevents server-side render

@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import PreRoute from "@/PreRoute";
+import PreRoute from "components/PreRoute";
 
 const Home: FC = () => {
   return <PreRoute />;

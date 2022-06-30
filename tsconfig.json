@@ -3,9 +3,6 @@
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "baseUrl": ".",
-    "paths": {
-      "@/*": ["components/*"]
-    },
     "moduleResolution": "node",
     "allowJs": true,
     "skipLibCheck": true,

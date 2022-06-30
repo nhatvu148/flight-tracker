@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import "styles/globals.css";
-import Layout from "@/layout";
+import Layout from "components/layout";
 import { AppProps } from "next/app";
 import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
 import { ReactQueryDevtools } from "react-query/devtools";
