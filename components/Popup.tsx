@@ -16,6 +16,7 @@ import { IAppState, IMainState } from "redux/types";
 import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
 import { getFlights } from "api/flights";
+import terminator from "@joergdietrich/leaflet.terminator";
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
@@ -53,6 +54,11 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
 
       const mouse = L.control.mouseCoordinate({ position: "bottomleft" });
       mouse.addTo(map);
+      const term = terminator();
+      term.addTo(map);
+      setInterval(function () {
+        term.setTime();
+      }, 1000);
     }
 
     if (map && flights && markersCanvas && markersCanvas.current) {
