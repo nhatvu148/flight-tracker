@@ -16,7 +16,6 @@ import { IAppState, IMainState } from "redux/types";
 import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
 import { getFlights } from "api/flights";
-// @ts-ignore
 import terminator from "@joergdietrich/leaflet.terminator";
 
 // @ts-ignore
