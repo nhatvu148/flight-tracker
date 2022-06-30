@@ -1,4 +1,4 @@
-import { AirportData, FlightData } from "@/types";
+import { AirportData, FlightData } from "components/types";
 declare const L: any;
 
 export const initialMap = {
@@ -165,6 +165,12 @@ export const drawAirportsOnEachWorld = (
 export const layerMap = (publicRuntimeConfig: any) => [
   // https://stackoverflow.com/questions/62923809/list-of-all-available-tile-layers-for-leaflet
   // https://leaflet-extras.github.io/leaflet-providers/preview/
+  {
+    name: "Outdoors",
+    attribution:
+      '&copy; <a href="https://stadiamaps.com/">Stadia Maps</a>, &copy; <a href="https://openmaptiles.org/">OpenMapTiles</a> &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors',
+    url: "https://tiles.stadiamaps.com/tiles/outdoors/{z}/{x}/{y}{r}.png",
+  },
   {
     name: "Outdoors",
     attribution:
