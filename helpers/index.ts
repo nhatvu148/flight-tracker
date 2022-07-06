@@ -116,6 +116,17 @@ export const drawAircraftOnEachWorld = (
     const { icaoCode } = flight.aircraft;
     const { iataNumber, icaoNumber } = flight.flight;
 
+    if (departureIataCode === "" || arrivalIataCode === "") {
+      continue;
+    }
+
+    const departureAirport = airports.find(
+      (airport) => airport.codeIataAirport === departureIataCode
+    );
+    const arrivalAirport = airports.find(
+      (airport) => airport.codeIataAirport === arrivalIataCode
+    );
+
     const angleArr = [
       0, 15, 30, 45, 60, 75, 90, 105, 120, 135, 150, 165, 180, 195, 210, 225,
       240, 255, 270, 285, 300, 315, 330, 345, 360,
@@ -136,12 +147,9 @@ export const drawAircraftOnEachWorld = (
           this.closePopup();
         },
         click(e) {
-          const departureAirport = airports.find(
-            (airport) => airport.codeIataAirport === departureIataCode
-          );
-          const arrivalAirport = airports.find(
-            (airport) => airport.codeIataAirport === arrivalIataCode
-          );
+          if (departureAirport === undefined || arrivalAirport === undefined) {
+            return;
+          }
           const { latitudeAirport: latDepart, longitudeAirport: lonDepart } =
             departureAirport;
           const { latitudeAirport: latArrive, longitudeAirport: lonArrive } =
