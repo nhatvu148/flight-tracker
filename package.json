@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "format": "prettier --write \"pages/**/*.+(ts|tsx)\" \"components/**/*.+(ts|tsx)\" \"tests/**/*.+(ts|tsx)\" \"redux/**/*.+(ts|tsx)\"",
+    "format": "prettier --write \"pages/**/*.+(ts|tsx)\" \"components/**/*.+(ts|tsx)\" \"tests/**/*.+(ts|tsx)\" \"redux/**/*.+(ts|tsx)\" \"helpers/**/*.+(ts|tsx)\"",
     "test": "jest"
   },
   "dependencies": {
@@ -15,6 +15,7 @@
     "@material-ui/icons": "^4.11.3",
     "axios": "^0.27.2",
     "classnames": "^2.3.1",
+    "immutability-helper": "^3.1.1",
     "leaflet": "^1.8.0",
     "leaflet-defaulticon-compatibility": "^0.1.1",
     "leaflet-easybutton": "^2.4.0",

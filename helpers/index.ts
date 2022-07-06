@@ -1,4 +1,5 @@
 import { AirportData, FlightData } from "components/types";
+import update from "immutability-helper";
 declare const L: any;
 
 export const initialMap = {
@@ -86,11 +87,25 @@ export const getClosest = (arr: number[], goal: number) =>
     return Math.abs(curr - goal) < Math.abs(prev - goal) ? curr : prev;
   });
 
+export const getColor = (x) => {
+  return x < 500
+    ? "#009966"
+    : x < 1000
+    ? "#009966"
+    : x < 1500
+    ? "#95b7c4"
+    : x < 2000
+    ? "##95b7c4"
+    : "#95b7c4";
+};
+
 export const drawAircraftOnEachWorld = (
   flights: FlightData[],
+  airports: AirportData[],
   icon: any,
   markers: any,
-  offset: number
+  offset: number,
+  setSelectedAirports: any
 ) => {
   for (let i = 0; i < flights.length; i++) {
     const flight = flights[i];
@@ -119,6 +134,38 @@ export const drawAircraftOnEachWorld = (
         },
         mouseout(e) {
           this.closePopup();
+        },
+        click(e) {
+          const departureAirport = airports.find(
+            (airport) => airport.codeIataAirport === departureIataCode
+          );
+          const arrivalAirport = airports.find(
+            (airport) => airport.codeIataAirport === arrivalIataCode
+          );
+          const { latitudeAirport: latDepart, longitudeAirport: lonDepart } =
+            departureAirport;
+          const { latitudeAirport: latArrive, longitudeAirport: lonArrive } =
+            arrivalAirport;
+          setSelectedAirports((prev) =>
+            update(prev, {
+              0: {
+                geometry: {
+                  coordinates: {
+                    0: { $set: [lonDepart + offset, latDepart] },
+                    1: { $set: [longitude + offset, latitude] },
+                  },
+                },
+              },
+              1: {
+                geometry: {
+                  coordinates: {
+                    0: { $set: [longitude + offset, latitude] },
+                    1: { $set: [lonArrive + offset, latArrive] },
+                  },
+                },
+              },
+            })
+          );
         },
       });
 

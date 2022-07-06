@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 declare const L: any;
 import { useMap, useMapEvents } from "react-leaflet";
 import { Icon } from "leaflet";
@@ -11,7 +11,11 @@ import { AirportData, FlightData } from "./types";
 import { useQuery, UseQueryResult } from "react-query";
 import { getAirports } from "api/airports";
 import styles from "styles/Popup.module.scss";
-import { drawAircraftOnEachWorld, drawAirportsOnEachWorld } from "helpers";
+import {
+  drawAircraftOnEachWorld,
+  drawAirportsOnEachWorld,
+  getColor,
+} from "helpers";
 import { IAppState, IMainState } from "redux/types";
 import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
@@ -27,12 +31,39 @@ interface IStateProps {
 
 type IProps = IStateProps;
 
+const defaultgeojson = [
+  {
+    type: "Feature",
+    properties: { id: 1, elevation: 500 },
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [0, 0],
+        [0, 0],
+      ],
+    },
+  },
+  {
+    type: "Feature",
+    properties: { id: 2, elevation: 2000 },
+    geometry: {
+      type: "LineString",
+      coordinates: [
+        [0, 0],
+        [0, 0],
+      ],
+    },
+  },
+];
+
 const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
   const map = useMap();
   const markersCanvas = useRef(null);
   const currentZoom = useRef(zoom);
   const aircraftMarkers = useRef([]);
   const airportMarkers = useRef([]);
+  const [selectedAirports, setSelectedAirports] = useState(defaultgeojson);
+  const [geoJsonLayer, setGeoJsonLayer] = useState(null);
 
   // query from cache, no need to pass through props
   const { data: flights }: UseQueryResult<FlightData[], Error> = useQuery(
@@ -73,9 +104,30 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
 
       aircraftMarkers.current = [];
 
-      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, 0);
-      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, -360);
-      drawAircraftOnEachWorld(flights, icon(), aircraftMarkers.current, 360);
+      drawAircraftOnEachWorld(
+        flights,
+        airports,
+        icon(),
+        aircraftMarkers.current,
+        0,
+        setSelectedAirports
+      );
+      drawAircraftOnEachWorld(
+        flights,
+        airports,
+        icon(),
+        aircraftMarkers.current,
+        -360,
+        setSelectedAirports
+      );
+      drawAircraftOnEachWorld(
+        flights,
+        airports,
+        icon(),
+        aircraftMarkers.current,
+        360,
+        setSelectedAirports
+      );
 
       markersCanvas.current.addMarkers(aircraftMarkers.current);
     }
@@ -86,6 +138,23 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
       }
     };
   }, [map, flights]);
+
+  useEffect(() => {
+    if (geoJsonLayer) {
+      geoJsonLayer.clearLayers();
+    }
+    const _geoJsonLayer = L.geoJSON(selectedAirports, {
+      style: function (feature) {
+        return {
+          color: getColor(feature.properties.elevation),
+          opacity: 0.8,
+          weight: 3,
+          dashArray: feature.properties.id === 1 ? "0, 0" : "20, 20",
+          dashOffset: "0",        };
+      },
+    }).addTo(map);
+    setGeoJsonLayer(_geoJsonLayer);
+  }, [map, selectedAirports]);
 
   useEffect(() => {
     if (map && airports && markersCanvas && markersCanvas.current) {
