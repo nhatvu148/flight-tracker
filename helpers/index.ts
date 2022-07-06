@@ -1,5 +1,5 @@
 import { AirportData, FlightData } from "components/types";
-import update from "immutability-helper";
+import update from "components/ImmutabilityHelper";
 declare const L: any;
 
 export const initialMap = {
