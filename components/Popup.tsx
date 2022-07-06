@@ -90,14 +90,19 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
       setInterval(function () {
         term.setTime();
       }, 1000);
+
+      map.createPane("pane250").style.zIndex = "250"; // between tiles and overlays
+      map.createPane("pane450").style.zIndex = "450"; // between overlays and shadows
+      map.createPane("pane620").style.zIndex = "620"; // between markers and tooltips
+      map.createPane("pane800").style.zIndex = "800"; // above popups
     }
 
     if (map && flights && markersCanvas && markersCanvas.current) {
       const icon = () => (angle: number) =>
         L.divIcon({
           iconUrl: `/aircrafts-type-1/aircraft-${angle}.svg`, // "https://cdn1.iconfinder.com/data/icons/maps-and-navigation-free/32/Maps_Maps_Navigation_Direction_Arrow_Pointer-22-512.png",
-          iconSize: [20, 20],
-          iconAnchor: [10, 0],
+          iconSize: [25, 25],
+          iconAnchor: [10, 10],
           popupAnchor: [5, 0],
           // className: styles.rotate,
         });
@@ -144,13 +149,15 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
       geoJsonLayer.clearLayers();
     }
     const _geoJsonLayer = L.geoJSON(selectedAirports, {
+      pane: "pane250",
       style: function (feature) {
         return {
           color: getColor(feature.properties.elevation),
           opacity: 0.8,
           weight: 3,
           dashArray: feature.properties.id === 1 ? "0, 0" : "20, 20",
-          dashOffset: "0",        };
+          dashOffset: "0",
+        };
       },
     }).addTo(map);
     setGeoJsonLayer(_geoJsonLayer);
