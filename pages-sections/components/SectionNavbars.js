@@ -30,86 +30,86 @@ const SectionNavbars = () => {
       //   height: 400,
       //   color: "info",
       // }}
-      links={
-        <div className={classes.collapse}>
-          <List className={classes.list + " " + classes.mrAuto}>
-            <ListItem className={classes.listItem}>
-              <Button
-                className={classes.navLink}
-                onClick={(e) => {
-                  router.push("/flights");
-                }}
-                color="transparent"
-              >
-                Flights
-              </Button>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-              <Button
-                className={classes.navLink}
-                onClick={(e) => {
-                  router.push("/aircraft");
-                }}
-                color="transparent"
-              >
-                Aircraft
-              </Button>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-              <Button
-                className={classes.navLink}
-                onClick={(e) => {
-                  router.push("/airports");
-                }}
-                color="transparent"
-              >
-                Airports
-              </Button>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-              <Button
-                className={classes.navLink}
-                onClick={(e) => {
-                  router.push("/airlines");
-                }}
-                color="transparent"
-              >
-                Airlines
-              </Button>
-            </ListItem>
-            <ListItem className={classes.listItem}>
-              <Button
-                className={classes.navLink}
-                onClick={(e) => {
-                  router.push("/about");
-                }}
-                color="transparent"
-              >
-                About
-              </Button>
-            </ListItem>
-          </List>
-          <div className={classes.mlAuto}>
-            <CustomInput
-              white
-              inputRootCustomClasses={classes.inputRootCustomClasses}
-              formControlProps={{
-                className: classes.formControl,
-              }}
-              inputProps={{
-                placeholder: "Search",
-                inputProps: {
-                  "aria-label": "Search",
-                  className: classes.searchInput,
-                },
-              }}
-            />
-            <Button color="white" justIcon round>
-              <Search className={classes.searchIcon} />
-            </Button>
-          </div>
-        </div>
-      }
+      // links={
+      //   <div className={classes.collapse}>
+      //     <List className={classes.list + " " + classes.mrAuto}>
+      //       <ListItem className={classes.listItem}>
+      //         <Button
+      //           className={classes.navLink}
+      //           onClick={(e) => {
+      //             router.push("/flights");
+      //           }}
+      //           color="transparent"
+      //         >
+      //           Flights
+      //         </Button>
+      //       </ListItem>
+      //       <ListItem className={classes.listItem}>
+      //         <Button
+      //           className={classes.navLink}
+      //           onClick={(e) => {
+      //             router.push("/aircraft");
+      //           }}
+      //           color="transparent"
+      //         >
+      //           Aircraft
+      //         </Button>
+      //       </ListItem>
+      //       <ListItem className={classes.listItem}>
+      //         <Button
+      //           className={classes.navLink}
+      //           onClick={(e) => {
+      //             router.push("/airports");
+      //           }}
+      //           color="transparent"
+      //         >
+      //           Airports
+      //         </Button>
+      //       </ListItem>
+      //       <ListItem className={classes.listItem}>
+      //         <Button
+      //           className={classes.navLink}
+      //           onClick={(e) => {
+      //             router.push("/airlines");
+      //           }}
+      //           color="transparent"
+      //         >
+      //           Airlines
+      //         </Button>
+      //       </ListItem>
+      //       <ListItem className={classes.listItem}>
+      //         <Button
+      //           className={classes.navLink}
+      //           onClick={(e) => {
+      //             router.push("/about");
+      //           }}
+      //           color="transparent"
+      //         >
+      //           About
+      //         </Button>
+      //       </ListItem>
+      //     </List>
+      //     <div className={classes.mlAuto}>
+      //       <CustomInput
+      //         white
+      //         inputRootCustomClasses={classes.inputRootCustomClasses}
+      //         formControlProps={{
+      //           className: classes.formControl,
+      //         }}
+      //         inputProps={{
+      //           placeholder: "Search",
+      //           inputProps: {
+      //             "aria-label": "Search",
+      //             className: classes.searchInput,
+      //           },
+      //         }}
+      //       />
+      //       <Button color="white" justIcon round>
+      //         <Search className={classes.searchIcon} />
+      //       </Button>
+      //     </div>
+      //   </div>
+      // }
     />
   );
 };
