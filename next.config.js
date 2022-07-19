@@ -12,4 +12,8 @@ module.exports = {
     mapThunderforestToken: process.env.THUNDERFOREST_TOKEN,
     apiURL: process.env.API_URL,
   },
+  images: {
+    loader: "akamai",
+    path: "/",
+  },
 };
