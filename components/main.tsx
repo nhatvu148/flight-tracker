@@ -53,6 +53,10 @@ const Main: FC<IProps> = ({ main: { mapCenter, zoom, openLayer } }) => {
         message: "inputValue",
       })
     );
+
+    return () => {
+      socket.close();
+    };
   }, [socket]);
 
   return (
