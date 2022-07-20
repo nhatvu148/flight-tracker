@@ -1,4 +1,4 @@
-import { AirportData, FlightData } from "components/types";
+import { AirportData, FlightData, Geography } from "components/types";
 import update from "components/ImmutabilityHelper";
 declare const L: any;
 
@@ -101,15 +101,19 @@ export const getColor = (x) => {
 
 export const drawAircraftOnEachWorld = (
   flights: FlightData[],
+  eFlights: Geography[],
   airports: AirportData[],
   icon: any,
   markers: any,
   offset: number,
   setSelectedAirports: any
 ) => {
+  if (eFlights.length === 0) {
+    return;
+  }
   for (let i = 0; i < flights.length; i++) {
     const flight = flights[i];
-    const { latitude, longitude, direction } = flight.geography;
+    const { latitude, longitude, direction } = eFlights[i]; // flight.geography;
     const { iataCode: arrivalIataCode } = flight.arrival;
     const { iataCode: departureIataCode } = flight.departure;
 

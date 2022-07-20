@@ -7,7 +7,7 @@ import { makeStyles } from "@material-ui/core";
 
 import "node_modules/leaflet-markers-canvas/src/leaflet-markers-canvas.js";
 import javascriptStyles from "styles/jss/nextjs-material-kit-pro/pages/componentsSections/javascriptStyles.js";
-import { AirportData, FlightData } from "./types";
+import { AirportData, FlightData, Geography } from "./types";
 import { useQuery, UseQueryResult } from "react-query";
 import { getAirports } from "api/airports";
 import styles from "styles/Popup.module.scss";
@@ -56,7 +56,7 @@ const defaultgeojson = [
   },
 ];
 
-const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
+const LocationMarker: FC<IProps> = ({ main: { zoom, eFlights } }) => {
   const map = useMap();
   const markersCanvas = useRef(null);
   const currentZoom = useRef(zoom);
@@ -111,6 +111,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
 
       drawAircraftOnEachWorld(
         flights,
+        eFlights,
         airports,
         icon(),
         aircraftMarkers.current,
@@ -119,6 +120,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
       );
       drawAircraftOnEachWorld(
         flights,
+        eFlights,
         airports,
         icon(),
         aircraftMarkers.current,
@@ -127,6 +129,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
       );
       drawAircraftOnEachWorld(
         flights,
+        eFlights,
         airports,
         icon(),
         aircraftMarkers.current,
@@ -142,7 +145,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
         markersCanvas.current.removeMarkers(aircraftMarkers.current);
       }
     };
-  }, [map, flights]);
+  }, [map, flights, eFlights]);
 
   useEffect(() => {
     if (geoJsonLayer) {

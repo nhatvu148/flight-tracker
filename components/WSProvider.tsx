@@ -27,11 +27,11 @@ function WSProvider({ children, url }: WSProviderProps): JSX.Element {
     [url]
   );
 
-//   useEffect(() => {
-//     return () => {
-//       wsInstance?.close();
-//     };
-//   }, [wsInstance]);
+  //   useEffect(() => {
+  //     return () => {
+  //       wsInstance?.close();
+  //     };
+  //   }, [wsInstance]);
 
   return (
     <WSStateContext.Provider value={wsInstance}>

@@ -14,10 +14,17 @@ const initialState: IMainState = {
   },
   zoom: getInitialMapCenter("map.zoom"),
   openLayer: getInitial("openLayer"),
+  eFlights: [],
 };
 
 const mainReducer = (state = initialState, action: TMainAction) => {
   switch (action.type) {
+    case ActionTypes.SET_EFLIGHTS:
+      return {
+        ...state,
+        eFlights: action.payload,
+      };
+
     case ActionTypes.SET_OPEN_LAYER:
       return {
         ...state,

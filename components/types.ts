@@ -1,33 +1,33 @@
-interface ICode {
+export interface ICode {
   iataCode: string;
   icaoCode: string;
 }
 
-interface Aircraft extends ICode {
+export interface Aircraft extends ICode {
   icao24: string;
   regNumber: string;
 }
 
-interface Flight {
+export interface Flight {
   iataNumber: string;
   icaoNumber: string;
   number: string;
 }
 
-interface Geography {
+export interface Geography {
   altitude: number;
   direction: number;
   latitude: number;
   longitude: number;
 }
 
-interface Speed {
+export interface Speed {
   horizontal: number;
   isGround: number;
   vspeed: number;
 }
 
-interface System {
+export interface System {
   squawk: number;
   updated: number;
 }

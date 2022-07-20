@@ -28,6 +28,10 @@ import ZoomLevel from "./ZoomLevel";
 import { getMain } from "redux/selectors";
 import { layerMap } from "helpers";
 import { useWS } from "./WSProvider";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction, bindActionCreators } from "redux";
+import { Geography } from "./types";
+import { setEFlights } from "redux/actions/mainActions";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -35,9 +39,19 @@ interface IStateProps {
   main: IMainState;
 }
 
-type IProps = IStateProps;
+interface IDispatchProps {
+  dispatch?: ThunkDispatch<{}, {}, AnyAction>;
+  setEFlights: (
+    newData: Geography[]
+  ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+}
 
-const Main: FC<IProps> = ({ main: { mapCenter, zoom, openLayer } }) => {
+type IProps = IStateProps & IDispatchProps;
+
+const Main: FC<IProps> = ({
+  main: { mapCenter, zoom, openLayer },
+  setEFlights,
+}) => {
   const socket = useWS();
   useEffect(() => {
     socket.onopen = () => {
@@ -45,7 +59,10 @@ const Main: FC<IProps> = ({ main: { mapCenter, zoom, openLayer } }) => {
     };
 
     socket.onmessage = (e) => {
-      console.log("Get message from server: " + e.data);
+      const data = JSON.parse(e.data);
+      // console.log("Get message from server: " + data.message);
+      // console.log(data.eFlights);
+      setEFlights(data.eFlights);
     };
 
     socket.send(
@@ -110,4 +127,15 @@ const mapStateToProps = (state: IAppState): IStateProps => ({
   main: getMain(state),
 });
 
-export default connect(mapStateToProps)(Main);
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+  return {
+    ...bindActionCreators(
+      {
+        setEFlights,
+      },
+      dispatch
+    ),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(Main);

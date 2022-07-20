@@ -1,6 +1,7 @@
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction } from "redux";
 import { ActionTypes, IBounds, ICoordinate } from "redux/types";
+import { Geography } from "components/types";
 
 export const setBounds =
   (newData: IBounds) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
@@ -43,6 +44,18 @@ export const setOpenLayer =
     try {
       dispatch({
         type: ActionTypes.SET_OPEN_LAYER,
+        payload: newData,
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+export const setEFlights =
+  (newData: Geography[]) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+    try {
+      dispatch({
+        type: ActionTypes.SET_EFLIGHTS,
         payload: newData,
       });
     } catch (error) {
