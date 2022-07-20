@@ -105,8 +105,7 @@ export const drawAircraftOnEachWorld = (
   icon: any,
   markers: any,
   offset: number,
-  setSelectedAirports: any,
-  socket: WebSocket
+  setSelectedAirports: any
 ) => {
   for (let i = 0; i < flights.length; i++) {
     const flight = flights[i];
@@ -148,11 +147,6 @@ export const drawAircraftOnEachWorld = (
           this.closePopup();
         },
         click(e) {
-          socket.send(
-            JSON.stringify({
-              message: "inputValue",
-            })
-          );
           if (departureAirport === undefined || arrivalAirport === undefined) {
             return;
           }

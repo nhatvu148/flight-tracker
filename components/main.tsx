@@ -40,8 +40,6 @@ type IProps = IStateProps;
 const Main: FC<IProps> = ({ main: { mapCenter, zoom, openLayer } }) => {
   const socket = useWS();
   useEffect(() => {
-    console.log(socket);
-    console.log(socket.readyState);
     socket.onopen = () => {
       console.log("Connected");
     };
@@ -49,6 +47,12 @@ const Main: FC<IProps> = ({ main: { mapCenter, zoom, openLayer } }) => {
     socket.onmessage = (e) => {
       console.log("Get message from server: " + e.data);
     };
+
+    socket.send(
+      JSON.stringify({
+        message: "inputValue",
+      })
+    );
   }, [socket]);
 
   return (

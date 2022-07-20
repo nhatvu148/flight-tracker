@@ -21,7 +21,6 @@ import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
 import { getFlights } from "api/flights";
 import terminator from "components/LeafletTerminator";
-import { useWS } from "./WSProvider";
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
@@ -58,7 +57,6 @@ const defaultgeojson = [
 ];
 
 const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
-  const socket = useWS();
   const map = useMap();
   const markersCanvas = useRef(null);
   const currentZoom = useRef(zoom);
@@ -117,8 +115,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
         icon(),
         aircraftMarkers.current,
         0,
-        setSelectedAirports,
-        socket
+        setSelectedAirports
       );
       drawAircraftOnEachWorld(
         flights,
@@ -126,8 +123,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
         icon(),
         aircraftMarkers.current,
         -360,
-        setSelectedAirports,
-        socket
+        setSelectedAirports
       );
       drawAircraftOnEachWorld(
         flights,
@@ -135,8 +131,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom } }) => {
         icon(),
         aircraftMarkers.current,
         360,
-        setSelectedAirports,
-        socket
+        setSelectedAirports
       );
 
       markersCanvas.current.addMarkers(aircraftMarkers.current);
