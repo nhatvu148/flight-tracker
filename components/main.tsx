@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -27,6 +27,7 @@ import { IMainState, IAppState } from "redux/types";
 import ZoomLevel from "./ZoomLevel";
 import { getMain } from "redux/selectors";
 import { layerMap } from "helpers";
+import { useWS } from "./WSProvider";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -37,6 +38,19 @@ interface IStateProps {
 type IProps = IStateProps;
 
 const Main: FC<IProps> = ({ main: { mapCenter, zoom, openLayer } }) => {
+  const socket = useWS();
+  useEffect(() => {
+    console.log(socket);
+    console.log(socket.readyState);
+    socket.onopen = () => {
+      console.log("Connected");
+    };
+
+    socket.onmessage = (e) => {
+      console.log("Get message from server: " + e.data);
+    };
+  }, [socket]);
+
   return (
     <div className={styles.container}>
       <main className={styles.main}>

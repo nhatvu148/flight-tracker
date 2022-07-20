@@ -8,6 +8,7 @@ import store from "redux/store";
 import { Provider } from "react-redux";
 import { useRouter } from "next/router";
 import { isProd } from "helpers";
+import { WSProvider } from "components/WSProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // useState to not share cache between users, create per life cycle
@@ -48,7 +49,9 @@ function MyApp({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
           <Layout>
-            <Component {...pageProps} />
+            <WSProvider url="">
+              <Component {...pageProps} />
+            </WSProvider>
           </Layout>
         </Hydrate>
         <ReactQueryDevtools initialIsOpen={false} />
