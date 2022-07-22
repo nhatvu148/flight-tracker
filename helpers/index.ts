@@ -108,12 +108,13 @@ export const drawAircraftOnEachWorld = (
   offset: number,
   setSelectedAirports: any
 ) => {
-  if (eFlights.length === 0) {
-    return;
-  }
+  // if (eFlights.length === 0) {
+  //   return;
+  // }
   for (let i = 0; i < flights.length; i++) {
     const flight = flights[i];
-    const { latitude, longitude, direction } = eFlights[i]; // flight.geography;
+    const { latitude, longitude, direction } =
+      eFlights.length === 0 ? flight.geography : eFlights[i];
     const { iataCode: arrivalIataCode } = flight.arrival;
     const { iataCode: departureIataCode } = flight.departure;
 

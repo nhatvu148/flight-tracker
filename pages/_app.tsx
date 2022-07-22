@@ -9,6 +9,7 @@ import { Provider } from "react-redux";
 import { useRouter } from "next/router";
 import { isProd } from "helpers";
 import { WSProvider } from "components/WSProvider";
+import { EFlightsProvider } from "components/EFlightsProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   // useState to not share cache between users, create per life cycle
@@ -50,7 +51,9 @@ function MyApp({ Component, pageProps }: AppProps) {
         <Hydrate state={pageProps.dehydratedState}>
           <Layout>
             <WSProvider url="">
-              <Component {...pageProps} />
+              <EFlightsProvider>
+                <Component {...pageProps} />
+              </EFlightsProvider>
             </WSProvider>
           </Layout>
         </Hydrate>

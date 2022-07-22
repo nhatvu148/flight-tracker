@@ -41,4 +41,4 @@ export type TMainAction =
   | { type: ActionTypes.SET_MAP_CENTER; payload: ICoordinate }
   | { type: ActionTypes.SET_OPEN_LAYER; payload: string }
   | { type: ActionTypes.SET_ZOOM; payload: number }
-  | { type: ActionTypes.SET_EFLIGHTS; payload: number };
+  | { type: ActionTypes.SET_EFLIGHTS; payload: Geography[] };

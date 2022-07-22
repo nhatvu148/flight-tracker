@@ -21,6 +21,7 @@ import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
 import { getFlights } from "api/flights";
 import terminator from "components/LeafletTerminator";
+import update from "components/ImmutabilityHelper";
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
@@ -64,6 +65,7 @@ const LocationMarker: FC<IProps> = ({ main: { zoom, eFlights } }) => {
   const airportMarkers = useRef([]);
   const [selectedAirports, setSelectedAirports] = useState(defaultgeojson);
   const [geoJsonLayer, setGeoJsonLayer] = useState(null);
+  // const [{ eFlights }] = useEFlights();
 
   // query from cache, no need to pass through props
   const { data: flights }: UseQueryResult<FlightData[], Error> = useQuery(
@@ -146,6 +148,41 @@ const LocationMarker: FC<IProps> = ({ main: { zoom, eFlights } }) => {
       }
     };
   }, [map, flights, eFlights]);
+
+  // useEffect(() => {
+  //   const departureAirport = airports.find(
+  //     (airport) => airport.codeIataAirport === departureIataCode
+  //   );
+  //   const arrivalAirport = airports.find(
+  //     (airport) => airport.codeIataAirport === arrivalIataCode
+  //   );
+
+  //   const { latitudeAirport: latDepart, longitudeAirport: lonDepart } =
+  //           departureAirport;
+  //         const { latitudeAirport: latArrive, longitudeAirport: lonArrive } =
+  //           arrivalAirport;
+
+  //   setSelectedAirports((prev) =>
+  //     update(prev, {
+  //       0: {
+  //         geometry: {
+  //           coordinates: {
+  //             0: { $set: [lonDepart + offset, latDepart] },
+  //             1: { $set: [longitude + offset, latitude] },
+  //           },
+  //         },
+  //       },
+  //       1: {
+  //         geometry: {
+  //           coordinates: {
+  //             0: { $set: [longitude + offset, latitude] },
+  //             1: { $set: [lonArrive + offset, latArrive] },
+  //           },
+  //         },
+  //       },
+  //     })
+  //   );
+  // }, [eFlights])
 
   useEffect(() => {
     if (geoJsonLayer) {

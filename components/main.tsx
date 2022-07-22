@@ -32,6 +32,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { Geography } from "./types";
 import { setEFlights } from "redux/actions/mainActions";
+// import { setEFlights } from "components/EFlightsProvider";
 
 const { publicRuntimeConfig } = getConfig();
 
@@ -53,6 +54,7 @@ const Main: FC<IProps> = ({
   setEFlights,
 }) => {
   const socket = useWS();
+  // const [, dispatch] = useEFlights();
   useEffect(() => {
     socket.onopen = () => {
       console.log("Connected");
@@ -61,8 +63,8 @@ const Main: FC<IProps> = ({
     socket.onmessage = (e) => {
       const data = JSON.parse(e.data);
       // console.log("Get message from server: " + data.message);
-      // console.log(data.eFlights);
-      setEFlights(data.eFlights);
+      console.log(data);
+      setEFlights(data);
     };
 
     socket.send(
