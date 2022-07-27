@@ -63,8 +63,13 @@ const Main: FC<IProps> = ({
     socket.onmessage = (e) => {
       const data = JSON.parse(e.data);
       // console.log("Get message from server: " + data.message);
-      console.log(data);
+      // console.log(data);
       setEFlights(data);
+      socket.send(
+        JSON.stringify({
+          message: "inputValue",
+        })
+      );
     };
 
     socket.send(
