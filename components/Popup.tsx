@@ -22,6 +22,14 @@ import { connect } from "react-redux";
 import { getFlights } from "api/flights";
 import terminator from "components/LeafletTerminator";
 import update from "components/ImmutabilityHelper";
+// @ts-ignore
+import { CalculationRequest } from "pb/flight_pb";
+import { FlightServiceClient } from "pb/flight_grpc_web_pb";
+import { ThunkDispatch } from "redux-thunk";
+import { AnyAction, bindActionCreators } from "redux";
+import { setEFlights } from "redux/actions/mainActions";
+
+const client = new FlightServiceClient("http://localhost:8000", null, null);
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
@@ -30,7 +38,14 @@ interface IStateProps {
   main: IMainState;
 }
 
-type IProps = IStateProps;
+interface IDispatchProps {
+  dispatch?: ThunkDispatch<{}, {}, AnyAction>;
+  setEFlights: (
+    newData: Geography[]
+  ) => (dispatch: ThunkDispatch<{}, {}, AnyAction>) => void;
+}
+
+type IProps = IStateProps & IDispatchProps;
 
 const defaultgeojson = [
   {
@@ -57,7 +72,10 @@ const defaultgeojson = [
   },
 ];
 
-const LocationMarker: FC<IProps> = ({ main: { zoom, eFlights } }) => {
+const LocationMarker: FC<IProps> = ({
+  main: { zoom, eFlights },
+  setEFlights,
+}) => {
   const map = useMap();
   const markersCanvas = useRef(null);
   const currentZoom = useRef(zoom);
@@ -76,6 +94,38 @@ const LocationMarker: FC<IProps> = ({ main: { zoom, eFlights } }) => {
     "airports",
     () => getAirports()
   );
+
+  const getGeo = (name: string, command: string) => {
+    console.log("called");
+
+    const calculationRequest = new CalculationRequest();
+    calculationRequest.setName(name);
+    calculationRequest.setCalculationCommand(command);
+    const stream = client.getPercentage(calculationRequest, {});
+
+    stream.on("data", function (response: any) {
+      const res = response.getGeographyList();
+      console.log(res[0].array);
+
+      const geo = res.map((r) => {
+        const [, h, x, y] = r.array;
+        return {
+          altitude: 0,
+          direction: h,
+          latitude: x,
+          longitude: y,
+        };
+      });
+      setEFlights(geo);
+    });
+    stream.on("end", function () {
+      console.log("end");
+    });
+  };
+
+  useEffect(() => {
+    getGeo("hello", "world");
+  }, []);
 
   useEffect(() => {
     if (markersCanvas.current === null) {
@@ -306,4 +356,15 @@ const mapStateToProps = (state: IAppState): IStateProps => ({
   main: getMain(state),
 });
 
-export default connect(mapStateToProps)(LocationMarker);
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, AnyAction>) => {
+  return {
+    ...bindActionCreators(
+      {
+        setEFlights,
+      },
+      dispatch
+    ),
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(LocationMarker);

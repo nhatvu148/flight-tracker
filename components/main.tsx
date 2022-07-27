@@ -55,33 +55,34 @@ const Main: FC<IProps> = ({
 }) => {
   const socket = useWS();
   // const [, dispatch] = useEFlights();
-  useEffect(() => {
-    socket.onopen = () => {
-      console.log("Connected");
-    };
 
-    socket.onmessage = (e) => {
-      const data = JSON.parse(e.data);
-      // console.log("Get message from server: " + data.message);
-      // console.log(data);
-      setEFlights(data);
-      socket.send(
-        JSON.stringify({
-          message: "inputValue",
-        })
-      );
-    };
+  // useEffect(() => {
+  //   socket.onopen = () => {
+  //     console.log("Connected");
+  //   };
 
-    socket.send(
-      JSON.stringify({
-        message: "inputValue",
-      })
-    );
+  //   socket.onmessage = (e) => {
+  //     const data = JSON.parse(e.data);
+  //     // console.log("Get message from server: " + data.message);
+  //     // console.log(data);
+  //     setEFlights(data);
+  //     socket.send(
+  //       JSON.stringify({
+  //         message: "inputValue",
+  //       })
+  //     );
+  //   };
 
-    return () => {
-      socket.close();
-    };
-  }, [socket]);
+  //   socket.send(
+  //     JSON.stringify({
+  //       message: "inputValue",
+  //     })
+  //   );
+
+  //   return () => {
+  //     socket.close();
+  //   };
+  // }, [socket]);
 
   return (
     <div className={styles.container}>
