@@ -8,7 +8,7 @@ import store from "redux/store";
 import { Provider } from "react-redux";
 import { useRouter } from "next/router";
 import { isProd } from "helpers";
-import { WSProvider } from "components/WSProvider";
+// import { WSProvider } from "components/WSProvider";
 import { EFlightsProvider } from "components/EFlightsProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
@@ -50,11 +50,11 @@ function MyApp({ Component, pageProps }: AppProps) {
       <QueryClientProvider client={queryClient}>
         <Hydrate state={pageProps.dehydratedState}>
           <Layout>
-            <WSProvider url="">
-              <EFlightsProvider>
-                <Component {...pageProps} />
-              </EFlightsProvider>
-            </WSProvider>
+            {/* <WSProvider url=""> */}
+            <EFlightsProvider>
+              <Component {...pageProps} />
+            </EFlightsProvider>
+            {/* </WSProvider> */}
           </Layout>
         </Hydrate>
         <ReactQueryDevtools initialIsOpen={false} />
