@@ -102,7 +102,6 @@ const LocationMarker: FC<IProps> = ({
     calculationRequest.setName(name);
     calculationRequest.setCalculationCommand(command);
     const stream = client.getPercentage(calculationRequest, {});
-    console.log("Here");
     stream.on("data", function (response: any) {
       const res = response.getGeographyList();
       console.log(res[0].array);
