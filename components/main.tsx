@@ -53,7 +53,7 @@ const Main: FC<IProps> = ({
   main: { mapCenter, zoom, openLayer },
   setEFlights,
 }) => {
-  const socket = useWS();
+  // const socket = useWS();
   // const [, dispatch] = useEFlights();
 
   // useEffect(() => {
