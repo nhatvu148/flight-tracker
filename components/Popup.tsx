@@ -123,11 +123,18 @@ const LocationMarker: FC<IProps> = ({
   };
 
   useEffect(() => {
-    getGeo("hello", "world");
+    const st = setTimeout(() => {
+      window.location.reload();
+    }, 60000);
+
+    return () => {
+      clearTimeout(st);
+    };
   }, []);
 
   useEffect(() => {
     if (markersCanvas.current === null) {
+      getGeo("hello", "world");
       map.invalidateSize();
 
       // @ts-ignore
