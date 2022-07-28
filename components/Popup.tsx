@@ -29,7 +29,7 @@ import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
 import { setEFlights } from "redux/actions/mainActions";
 
-const client = new FlightServiceClient("http://localhost:8000", null, null);
+const client = new FlightServiceClient(`/envoy`, null, null);
 
 // @ts-ignore
 const useStyles = makeStyles(javascriptStyles);
@@ -102,7 +102,7 @@ const LocationMarker: FC<IProps> = ({
     calculationRequest.setName(name);
     calculationRequest.setCalculationCommand(command);
     const stream = client.getPercentage(calculationRequest, {});
-
+    console.log("Here");
     stream.on("data", function (response: any) {
       const res = response.getGeographyList();
       console.log(res[0].array);

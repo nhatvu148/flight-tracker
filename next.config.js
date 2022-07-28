@@ -5,6 +5,10 @@ module.exports = () => {
         source: "/api/:path*",
         destination: "http://localhost:55556/api/:path*",
       },
+      {
+        source: "/envoy/:path*",
+        destination: "http://localhost:8000/:path*",
+      },
     ];
   };
 
