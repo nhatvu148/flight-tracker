@@ -2,8 +2,12 @@ import { useState, useEffect } from "react";
 import "styles/globals.css";
 import Layout from "components/layout";
 import { AppProps } from "next/app";
-import { Hydrate, QueryClient, QueryClientProvider } from "react-query";
-import { ReactQueryDevtools } from "react-query/devtools";
+import {
+  Hydrate,
+  QueryClient,
+  QueryClientProvider,
+} from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import store from "redux/store";
 import { Provider } from "react-redux";
 import { useRouter } from "next/router";

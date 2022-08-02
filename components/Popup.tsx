@@ -8,7 +8,7 @@ import { makeStyles } from "@material-ui/core";
 import "node_modules/leaflet-markers-canvas/src/leaflet-markers-canvas.js";
 import javascriptStyles from "styles/jss/nextjs-material-kit-pro/pages/componentsSections/javascriptStyles.js";
 import { AirportData, FlightData, Geography } from "./types";
-import { useQuery, UseQueryResult } from "react-query";
+import { useQuery, UseQueryResult } from "@tanstack/react-query";
 import { getAirports } from "api/airports";
 import styles from "styles/Popup.module.scss";
 import {
@@ -87,11 +87,11 @@ const LocationMarker: FC<IProps> = ({
 
   // query from cache, no need to pass through props
   const { data: flights }: UseQueryResult<FlightData[], Error> = useQuery(
-    "flights",
+    ["flights"],
     () => getFlights()
   );
   const { data: airports }: UseQueryResult<AirportData[], Error> = useQuery(
-    "airports",
+    ["airports"],
     () => getAirports()
   );
 
