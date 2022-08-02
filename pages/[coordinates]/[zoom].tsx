@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo } from "react";
 import type { GetServerSideProps } from "next";
 import dynamic from "next/dynamic";
-import { dehydrate, QueryClient } from "react-query";
+import { dehydrate, QueryClient } from "@tanstack/react-query";
 import { getFlights } from "api/flights";
 import { getAirports } from "api/airports";
 import Loading from "components/Loading";

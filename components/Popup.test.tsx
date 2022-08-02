@@ -66,7 +66,7 @@ describe("main tests", () => {
       lng: 0,
     };
     const zoom = 5;
-    const openLayer = "";
+    const openLayer = "Transport";
     const eFlights = [];
     renderComponent({
       bounds,
