@@ -15,7 +15,7 @@ import {
   drawAircraftOnEachWorld,
   drawAirportsOnEachWorld,
   getColor,
-} from "helpers";
+} from "../helpers";
 import { IAppState, IMainState } from "redux/types";
 import { getMain } from "redux/selectors";
 import { connect } from "react-redux";
@@ -122,19 +122,19 @@ const LocationMarker: FC<IProps> = ({
     });
   };
 
-  useEffect(() => {
-    const st = setTimeout(() => {
-      window.location.reload();
-    }, 60000);
+  // useEffect(() => {
+  //   const st = setTimeout(() => {
+  //     window.location.reload();
+  //   }, 60000);
 
-    return () => {
-      clearTimeout(st);
-    };
-  }, []);
+  //   return () => {
+  //     clearTimeout(st);
+  //   };
+  // }, []);
 
   useEffect(() => {
     if (markersCanvas.current === null) {
-      getGeo("hello", "world");
+      // getGeo("hello", "world");
       map.invalidateSize();
 
       // @ts-ignore

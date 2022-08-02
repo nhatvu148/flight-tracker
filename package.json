@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "format": "prettier --write \"pages/**/*.+(ts|tsx)\" \"components/**/*.+(ts|tsx)\" \"tests/**/*.+(ts|tsx)\" \"redux/**/*.+(ts|tsx)\" \"helpers/**/*.+(ts|tsx)\"",
-    "test": "jest",
+    "test": "jest --transformIgnorePatterns \"node_modules/(?!your-module-name)/\"",
     "export": "rm -rf .next && next build && next export -o dist"
   },
   "dependencies": {

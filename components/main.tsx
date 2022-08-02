@@ -26,7 +26,7 @@ import { connect } from "react-redux";
 import { IMainState, IAppState } from "redux/types";
 import ZoomLevel from "./ZoomLevel";
 import { getMain } from "redux/selectors";
-import { layerMap } from "helpers";
+import { layerMap } from "../helpers";
 import { useWS } from "./WSProvider";
 import { ThunkDispatch } from "redux-thunk";
 import { AnyAction, bindActionCreators } from "redux";
