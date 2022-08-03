@@ -144,10 +144,12 @@ const LocationMarker: FC<IProps> = ({
       const mouse = L.control.mouseCoordinate({ position: "bottomleft" });
       mouse.addTo(map);
       const term = terminator();
-      term.addTo(map);
-      setInterval(function () {
-        term.setTime();
-      }, 1000);
+      if (process.env.IS_TEST !== "true") {
+        term.addTo(map);
+        setInterval(function () {
+          term.setTime();
+        }, 1000);
+      }
 
       map.createPane("pane250").style.zIndex = "250"; // between tiles and overlays
       map.createPane("pane450").style.zIndex = "450"; // between overlays and shadows
@@ -241,22 +243,24 @@ const LocationMarker: FC<IProps> = ({
   // }, [eFlights])
 
   useEffect(() => {
-    if (geoJsonLayer) {
-      geoJsonLayer.clearLayers();
+    if (process.env.IS_TEST !== "true") {
+      if (geoJsonLayer) {
+        geoJsonLayer.clearLayers();
+      }
+      const _geoJsonLayer = L.geoJSON(selectedAirports, {
+        pane: "pane250",
+        style: function (feature) {
+          return {
+            color: getColor(feature.properties.elevation),
+            opacity: 0.8,
+            weight: 3,
+            dashArray: feature.properties.id === 1 ? "0, 0" : "20, 20",
+            dashOffset: "0",
+          };
+        },
+      }).addTo(map);
+      setGeoJsonLayer(_geoJsonLayer);
     }
-    const _geoJsonLayer = L.geoJSON(selectedAirports, {
-      pane: "pane250",
-      style: function (feature) {
-        return {
-          color: getColor(feature.properties.elevation),
-          opacity: 0.8,
-          weight: 3,
-          dashArray: feature.properties.id === 1 ? "0, 0" : "20, 20",
-          dashOffset: "0",
-        };
-      },
-    }).addTo(map);
-    setGeoJsonLayer(_geoJsonLayer);
   }, [map, selectedAirports]);
 
   useEffect(() => {
