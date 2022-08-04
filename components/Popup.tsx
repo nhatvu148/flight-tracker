@@ -15,6 +15,7 @@ import {
   drawAircraftOnEachWorld,
   drawAirportsOnEachWorld,
   getColor,
+  setTerminator,
 } from "../helpers";
 import { IAppState, IMainState } from "redux/types";
 import { getMain } from "redux/selectors";
@@ -144,12 +145,7 @@ const LocationMarker: FC<IProps> = ({
       const mouse = L.control.mouseCoordinate({ position: "bottomleft" });
       mouse.addTo(map);
       const term = terminator();
-      if (process.env.IS_TEST !== "true") {
-        term.addTo(map);
-        setInterval(function () {
-          term.setTime();
-        }, 1000);
-      }
+      setTerminator(map, term);
 
       map.createPane("pane250").style.zIndex = "250"; // between tiles and overlays
       map.createPane("pane450").style.zIndex = "450"; // between overlays and shadows

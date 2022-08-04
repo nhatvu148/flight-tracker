@@ -1,5 +1,6 @@
 import { AirportData, FlightData, Geography } from "components/types";
 import update from "components/ImmutabilityHelper";
+import terminator from "components/LeafletTerminator";
 declare const L: any;
 
 export const initialMap = {
@@ -279,3 +280,10 @@ export const layerMap = (publicRuntimeConfig: any) => [
   //   url: `https://api.mapbox.com/styles/v1/nhatvu148/ckmf0vdp2hj0817lkwm8z7a50/tiles/512/{z}/{x}/{y}@2x?access_token=${publicRuntimeConfig.mapboxToken}`,
   // }
 ];
+
+export const setTerminator = (map, term) => {
+  term.addTo(map);
+  setInterval(function () {
+    term.setTime();
+  }, 1000);
+};

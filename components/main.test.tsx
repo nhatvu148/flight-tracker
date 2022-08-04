@@ -5,6 +5,7 @@ import configureStore from "redux-mock-store";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { IMainState } from "redux/types";
 import Main from "./main";
+import { setTerminator } from "../helpers";
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -37,6 +38,11 @@ const renderWithClient = (ui: React.ReactElement) => {
 };
 
 const mockStore = configureStore([]);
+jest.mock("../helpers", () => ({
+  ...jest.requireActual("../helpers"),
+  setTerminator: jest.fn(),
+}));
+
 describe("main tests", () => {
   const renderComponent = (state: IMainState) => {
     const store = mockStore({ main: { ...state } });
