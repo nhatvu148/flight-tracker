@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, fireEvent } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { Provider } from "react-redux";
 import configureStore from "redux-mock-store";
@@ -6,6 +6,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { IMainState } from "redux/types";
 import Main from "./main";
 import { setTerminator } from "../helpers";
+import axios from "axios";
 
 const createTestQueryClient = () =>
   new QueryClient({
@@ -60,7 +61,7 @@ describe("main tests", () => {
   };
 
   afterAll(cleanup);
-  it("show screen", () => {
+  it("show screen", async () => {
     const bounds = {
       west: 0,
       east: 0,
@@ -82,6 +83,26 @@ describe("main tests", () => {
       eFlights,
     });
 
+    // const canvas = screen.getByTestId("__next");
+    const body = document.getElementsByTagName("body");
+    expect(body[0]).toHaveStyle({ padding: "0px;" });
+
+    const title = screen.queryByText("flight");
+    expect(title).not.toBeInTheDocument();
+
+    userEvent.hover(body[0]);
+
+    fireEvent.keyDown(document, {
+      key: "Escape",
+      code: "Escape",
+      keyCode: 27,
+      charCode: 27,
+    });
+
+    const res = await axios.get("http://localhost:3030/hello");
+
+    expect(res.status).toBe(200);
+    expect(res.data[0].hello).toBe("world");
     expect(1 + 1).toBe(2);
   });
 });
