@@ -1,6 +1,45 @@
 import type { FlightData } from "@flight-tracker/types";
 
 const OPENSKY_API = "https://opensky-network.org/api";
+const OPENSKY_TOKEN_URL =
+  "https://auth.opensky-network.org/auth/realms/opensky-network/protocol/openid-connect/token";
+
+// OAuth2 token cache
+let cachedToken: { token: string; expiresAt: number } | null = null;
+
+async function getAccessToken(): Promise<string | null> {
+  const clientId = process.env.OPENSKY_CLIENT_ID;
+  const clientSecret = process.env.OPENSKY_CLIENT_SECRET;
+  if (!clientId || !clientSecret) return null;
+
+  // Reuse token if still valid (with 60s buffer)
+  if (cachedToken && Date.now() < cachedToken.expiresAt - 60_000) {
+    return cachedToken.token;
+  }
+
+  const res = await fetch(OPENSKY_TOKEN_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "client_credentials",
+      client_id: clientId,
+      client_secret: clientSecret,
+    }),
+  });
+
+  if (!res.ok) {
+    console.warn(`OpenSky token request failed: ${res.status}`);
+    return null;
+  }
+
+  const data = await res.json();
+  cachedToken = {
+    token: data.access_token,
+    expiresAt: Date.now() + data.expires_in * 1000,
+  };
+  console.log("OpenSky OAuth2 token acquired");
+  return cachedToken.token;
+}
 
 interface OpenSkyState {
   // [0] icao24, [1] callsign, [2] origin_country, [3] time_position,
@@ -106,9 +145,17 @@ export async function fetchLiveFlights(
     url += `?${params}`;
   }
 
-  const res = await fetch(url);
+  const headers: Record<string, string> = {};
+  const token = await getAccessToken();
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
+  const res = await fetch(url, { headers });
 
   if (!res.ok) {
+    // Invalidate token on 401 so next call re-authenticates
+    if (res.status === 401) cachedToken = null;
     throw new Error(`OpenSky API error: ${res.status} ${res.statusText}`);
   }
 
