@@ -36,12 +36,12 @@ export function FlightMarkers() {
   const map = useMap();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const canvasRef = useRef<any>(null);
-  const markerMapRef = useRef<Map<string, { marker: L.Marker; flight: FlightData; angle: number }>>(new Map());
+  const labelMarkerRef = useRef<L.Marker | null>(null);
   const { data: flights } = useFlights();
   const selectedFlight = useMapStore((s) => s.selectedFlight);
   const selectFlight = useMapStore((s) => s.selectFlight);
 
-  // Main effect: rebuild markers only when flight data changes
+  // Single effect: rebuild all markers when flights or selection changes
   useEffect(() => {
     if (!map) return;
 
@@ -53,49 +53,79 @@ export function FlightMarkers() {
 
     const canvas = canvasRef.current;
     canvas.clear();
-    markerMapRef.current.clear();
+
+    // Remove previous callsign label
+    if (labelMarkerRef.current) {
+      labelMarkerRef.current.remove();
+      labelMarkerRef.current = null;
+    }
 
     if (flights?.length) {
       const markers: L.Marker[] = [];
+      const selectedIcao24 = selectedFlight?.aircraft.icao24;
 
       for (const flight of flights) {
         const { latitude, longitude, direction } = flight.geography;
         if (latitude == null || longitude == null) continue;
 
         const angle = getClosest(ANGLE_STEPS, direction);
+        const isSelected = flight.aircraft.icao24 === selectedIcao24;
 
         const marker = L.marker([latitude, longitude], {
-          icon: getAircraftIcon(angle),
+          icon: getAircraftIcon(angle, isSelected),
         });
 
         marker.on("click", () => selectFlight(flight));
-        markerMapRef.current.set(flight.aircraft.icao24, { marker, flight, angle });
         markers.push(marker);
       }
 
       canvas.addMarkers(markers);
     }
-  }, [map, flights, selectFlight]);
 
-  // Separate effect: highlight/unhighlight selected marker without full rebuild
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
+    // Add callsign label above selected aircraft
+    if (selectedFlight) {
+      const { latitude, longitude } = selectedFlight.geography;
+      if (latitude != null && longitude != null) {
+        const callsign =
+          selectedFlight.flight.icaoNumber ||
+          selectedFlight.flight.iataNumber ||
+          selectedFlight.aircraft.icao24;
 
-    const selectedIcao24 = selectedFlight?.aircraft.icao24;
-
-    for (const [icao24, entry] of markerMapRef.current) {
-      const shouldBeSelected = icao24 === selectedIcao24;
-      const currentIcon = entry.marker.getIcon() as L.Icon;
-      const targetIcon = getAircraftIcon(entry.angle, shouldBeSelected);
-
-      if (currentIcon !== targetIcon) {
-        entry.marker.setIcon(targetIcon);
-        canvas.removeMarker(entry.marker);
-        canvas.addMarker(entry.marker);
+        labelMarkerRef.current = L.marker([latitude, longitude], {
+          icon: L.divIcon({
+            className: "",
+            html: `<div style="
+              transform: translate(-50%, -100%);
+              margin-top: -20px;
+              background: #1a1d21ee;
+              color: #f0c800;
+              font-size: 11px;
+              font-weight: 600;
+              font-family: ui-monospace, monospace;
+              padding: 2px 6px;
+              border-radius: 3px;
+              border: 1px solid #f0c80066;
+              white-space: nowrap;
+              pointer-events: none;
+              box-shadow: 0 1px 3px rgba(0,0,0,0.4);
+              width: fit-content;
+            ">${callsign}</div>`,
+            iconSize: [0, 0],
+            iconAnchor: [0, 0],
+          }),
+          interactive: false,
+          zIndexOffset: 1000,
+        }).addTo(map);
       }
     }
-  }, [selectedFlight]);
+
+    return () => {
+      if (labelMarkerRef.current) {
+        labelMarkerRef.current.remove();
+        labelMarkerRef.current = null;
+      }
+    };
+  }, [map, flights, selectedFlight, selectFlight]);
 
   return null;
 }
