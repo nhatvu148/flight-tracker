@@ -3,7 +3,7 @@ export const MAP_DEFAULTS = {
   zoom: 4,
   minZoom: 2,
   maxZoom: 15,
-  defaultLayer: "AlidadeSmoothDark",
+  defaultLayer: "CartoVoyager",
 } as const;
 
 export const ANGLE_STEPS = [
@@ -19,6 +19,12 @@ export interface TileLayerConfig {
 
 export function getTileLayers(mapTilerToken?: string): TileLayerConfig[] {
   return [
+    {
+      name: "CartoVoyager",
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+      url: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    },
     {
       name: "Mapnik",
       attribution:

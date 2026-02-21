@@ -1,42 +1,40 @@
 @import "tailwindcss";
 
-/* Dark theme overrides for Leaflet controls */
+/* FR24-style dark rounded controls on light map */
 .leaflet-control-zoom a {
-  background-color: #1a1d21 !important;
-  color: #e2e8f0 !important;
-  border-color: #2d3139 !important;
+  background-color: rgba(60, 64, 67, 0.85) !important;
+  color: #fff !important;
+  border-color: transparent !important;
+  border-radius: 50% !important;
+  width: 40px !important;
+  height: 40px !important;
+  line-height: 40px !important;
+  font-size: 18px !important;
+  margin-bottom: 4px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
 .leaflet-control-zoom a:hover {
-  background-color: #2d3139 !important;
+  background-color: rgba(60, 64, 67, 1) !important;
+}
+
+.leaflet-control-zoom {
+  border: none !important;
+  box-shadow: none !important;
 }
 
 .leaflet-control-layers {
-  background-color: #1a1d21 !important;
-  color: #e2e8f0 !important;
-  border-color: #2d3139 !important;
+  background-color: rgba(60, 64, 67, 0.85) !important;
+  color: #fff !important;
+  border: none !important;
+  border-radius: 8px !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3) !important;
 }
 
 .leaflet-control-layers-toggle {
-  background-color: #1a1d21 !important;
+  background-color: transparent !important;
 }
 
 .leaflet-control-layers label {
-  color: #e2e8f0 !important;
-}
-
-.leaflet-control-scale-line {
-  background-color: #1a1d21cc !important;
-  color: #e2e8f0 !important;
-  border-color: #e2e8f0 !important;
-}
-
-.leaflet-popup-content-wrapper,
-.leaflet-popup-tip {
-  background-color: #1a1d21 !important;
-  color: #e2e8f0 !important;
-}
-
-.leaflet-popup-close-button {
-  color: #94a3b8 !important;
+  color: #fff !important;
 }

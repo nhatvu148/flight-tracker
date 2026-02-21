@@ -5,7 +5,7 @@ export const flightsRouter = Router();
 
 // Keyed cache: "all" for global, "bounds:..." for bounded queries
 const cacheMap = new Map<string, { data: unknown; timestamp: number }>();
-const CACHE_TTL = 15_000; // 15 seconds
+const CACHE_TTL = 30_000; // 30 seconds — avoids hammering OpenSky's rate limit
 
 // GET /api/flights/live?north=&south=&east=&west=
 flightsRouter.get("/live", async (req, res) => {
@@ -50,13 +50,13 @@ flightsRouter.get("/live", async (req, res) => {
 
     res.json(flights);
   } catch (error) {
-    console.error("Error fetching flights:", error);
-    // On error, return any cached data as fallback
-    const anyCached = cacheMap.values().next().value;
-    if (anyCached) {
-      return res.json(anyCached.data);
+    // On error, return stale cached data as fallback
+    for (const entry of cacheMap.values()) {
+      return res.json(entry.data);
     }
-    res.status(500).json({ error: "Failed to fetch flights" });
+    // No cache at all — return empty array instead of 500
+    console.warn("OpenSky unavailable, no cache:", (error as Error).message);
+    res.json([]);
   }
 });
 
