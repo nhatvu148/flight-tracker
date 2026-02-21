@@ -32,6 +32,10 @@ function getAircraftIcon(angle: number, selected = false): L.Icon {
   return iconCache.get(key)!;
 }
 
+// Set by marker click, checked by map background click to prevent deselect race
+let _markerClicked = false;
+export function getMarkerClicked() { return _markerClicked; }
+
 export function FlightMarkers() {
   const map = useMap();
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -75,7 +79,11 @@ export function FlightMarkers() {
           icon: getAircraftIcon(angle, isSelected),
         });
 
-        marker.on("click", () => selectFlight(flight));
+        marker.on("click", () => {
+          _markerClicked = true;
+          selectFlight(flight);
+          setTimeout(() => { _markerClicked = false; }, 0);
+        });
         markers.push(marker);
       }
 

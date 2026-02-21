@@ -12,7 +12,7 @@ import {
 import "leaflet/dist/leaflet.css";
 import { getTileLayers, MAP_DEFAULTS } from "@flight-tracker/config";
 import { useMapStore } from "@/stores/map-store";
-import { FlightMarkers } from "./FlightMarkers";
+import { FlightMarkers, getMarkerClicked } from "./FlightMarkers";
 
 function MapEventHandler() {
   const { setCenter, setZoom, setBounds, selectFlight } = useMapStore();
@@ -34,14 +34,10 @@ function MapEventHandler() {
       setZoom(e.target.getZoom());
     },
     click() {
-      // Defer deselect so marker click (which fires in the same tick) takes priority
-      const current = useMapStore.getState().selectedFlight;
-      setTimeout(() => {
-        // Only deselect if no marker click changed the selection in this tick
-        if (useMapStore.getState().selectedFlight === current) {
-          selectFlight(null);
-        }
-      }, 0);
+      // Skip deselect if a marker was just clicked (both fire on same map click)
+      if (!getMarkerClicked()) {
+        selectFlight(null);
+      }
     },
   });
 
