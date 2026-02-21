@@ -3,7 +3,7 @@ export const MAP_DEFAULTS = {
   zoom: 4,
   minZoom: 2,
   maxZoom: 15,
-  defaultLayer: "Mapnik",
+  defaultLayer: "AlidadeSmoothDark",
 } as const;
 
 export const ANGLE_STEPS = [

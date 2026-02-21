@@ -15,7 +15,7 @@ import { useMapStore } from "@/stores/map-store";
 import { FlightMarkers } from "./FlightMarkers";
 
 function MapEventHandler() {
-  const { setCenter, setZoom, setBounds } = useMapStore();
+  const { setCenter, setZoom, setBounds, selectFlight } = useMapStore();
 
   const map = useMapEvents({
     moveend(e) {
@@ -32,6 +32,9 @@ function MapEventHandler() {
     },
     zoomend(e) {
       setZoom(e.target.getZoom());
+    },
+    click() {
+      selectFlight(null);
     },
   });
 

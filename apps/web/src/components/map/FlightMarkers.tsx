@@ -7,42 +7,26 @@ import "leaflet-markers-canvas";
 import { useFlights } from "@/hooks/useFlights";
 import { getClosest } from "@flight-tracker/utils";
 import { ANGLE_STEPS } from "@flight-tracker/config";
+import { useMapStore } from "@/stores/map-store";
 import type { FlightData } from "@flight-tracker/types";
 
 // Pre-create icon cache — one L.icon per angle (image-based, not divIcon)
-const iconCache = new Map<number, L.Icon>();
-function getAircraftIcon(angle: number): L.Icon {
-  if (!iconCache.has(angle)) {
+const iconCache = new Map<string, L.Icon>();
+function getAircraftIcon(angle: number, selected = false): L.Icon {
+  const key = `${angle}-${selected ? "sel" : "def"}`;
+  if (!iconCache.has(key)) {
+    const size = selected ? 30 : 20;
+    const anchor = size / 2;
     iconCache.set(
-      angle,
+      key,
       L.icon({
         iconUrl: `/aircraft-icons/aircraft-${angle}.svg`,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10],
+        iconSize: [size, size],
+        iconAnchor: [anchor, anchor],
       })
     );
   }
-  return iconCache.get(angle)!;
-}
-
-function buildMarkers(flights: FlightData[]): L.Marker[] {
-  const markers: L.Marker[] = [];
-
-  for (const flight of flights) {
-    const { latitude, longitude, direction } = flight.geography;
-    if (latitude == null || longitude == null) continue;
-
-    const { icaoNumber } = flight.flight;
-    const angle = getClosest(ANGLE_STEPS, direction);
-
-    const marker = L.marker([latitude, longitude], {
-      icon: getAircraftIcon(angle),
-    }).bindPopup(icaoNumber || flight.aircraft.icao24);
-
-    markers.push(marker);
-  }
-
-  return markers;
+  return iconCache.get(key)!;
 }
 
 export function FlightMarkers() {
@@ -50,6 +34,8 @@ export function FlightMarkers() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const canvasRef = useRef<any>(null);
   const { data: flights } = useFlights();
+  const selectedFlight = useMapStore((s) => s.selectedFlight);
+  const selectFlight = useMapStore((s) => s.selectFlight);
 
   useEffect(() => {
     if (!map) return;
@@ -66,12 +52,31 @@ export function FlightMarkers() {
     // Clear previous markers
     canvas.clear();
 
-    // Draw flights on canvas (single world — worldCopyJump handles wrapping)
+    // Draw flights on canvas
     if (flights?.length) {
-      const markers = buildMarkers(flights);
+      const markers: L.Marker[] = [];
+      const selectedIcao24 = selectedFlight?.aircraft.icao24;
+
+      for (const flight of flights) {
+        const { latitude, longitude, direction } = flight.geography;
+        if (latitude == null || longitude == null) continue;
+
+        const angle = getClosest(ANGLE_STEPS, direction);
+        const isSelected = flight.aircraft.icao24 === selectedIcao24;
+
+        const marker = L.marker([latitude, longitude], {
+          icon: getAircraftIcon(angle, isSelected),
+        });
+
+        // leaflet-markers-canvas fires "click" on individual markers
+        marker.on("click", () => selectFlight(flight));
+
+        markers.push(marker);
+      }
+
       canvas.addMarkers(markers);
     }
-  }, [map, flights]);
+  }, [map, flights, selectedFlight, selectFlight]);
 
   return null;
 }
