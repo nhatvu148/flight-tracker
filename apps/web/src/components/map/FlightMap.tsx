@@ -34,7 +34,14 @@ function MapEventHandler() {
       setZoom(e.target.getZoom());
     },
     click() {
-      selectFlight(null);
+      // Defer deselect so marker click (which fires in the same tick) takes priority
+      const current = useMapStore.getState().selectedFlight;
+      setTimeout(() => {
+        // Only deselect if no marker click changed the selection in this tick
+        if (useMapStore.getState().selectedFlight === current) {
+          selectFlight(null);
+        }
+      }, 0);
     },
   });
 
