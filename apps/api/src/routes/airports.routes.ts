@@ -1,29 +1,36 @@
 import { Router } from "express";
-import type { AirportData } from "@flight-tracker/types";
+import {
+  airports,
+  findAirport,
+  searchAirports,
+} from "../services/static-data.service.js";
 
 export const airportsRouter = Router();
 
-// GET /api/airports?limit=
-airportsRouter.get("/", async (req, res) => {
-  try {
-    const { limit } = req.query;
-    // TODO: Integrate airport data source (OurAirports CSV or DB)
-    const airports: AirportData[] = [];
-    res.json(airports);
-  } catch (error) {
-    console.error("Error fetching airports:", error);
-    res.status(500).json({ error: "Failed to fetch airports" });
+// GET /api/airports?limit=&q=
+airportsRouter.get("/", (req, res) => {
+  const { limit, q } = req.query;
+
+  if (q && typeof q === "string") {
+    const results = searchAirports(q, limit ? Number(limit) : 50);
+    return res.json(results);
   }
+
+  if (limit) {
+    return res.json(airports.slice(0, Number(limit)));
+  }
+
+  res.json(airports);
 });
 
 // GET /api/airports/:code
-airportsRouter.get("/:code", async (req, res) => {
-  try {
-    const { code } = req.params;
-    // TODO: Fetch single airport detail
-    res.json({ message: `Airport ${code} detail — not yet implemented` });
-  } catch (error) {
-    console.error("Error fetching airport:", error);
-    res.status(500).json({ error: "Failed to fetch airport" });
+airportsRouter.get("/:code", (req, res) => {
+  const { code } = req.params;
+  const airport = findAirport(code);
+
+  if (!airport) {
+    return res.status(404).json({ error: `Airport ${code} not found` });
   }
+
+  res.json(airport);
 });
