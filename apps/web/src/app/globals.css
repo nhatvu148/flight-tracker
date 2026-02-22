@@ -38,3 +38,28 @@
 .leaflet-control-layers label {
   color: #fff !important;
 }
+
+/* Airport tooltip */
+.airport-tooltip {
+  background: rgba(26, 29, 33, 0.92) !important;
+  color: #e2e8f0 !important;
+  border: 1px solid rgba(100, 116, 139, 0.4) !important;
+  border-radius: 6px !important;
+  padding: 4px 8px !important;
+  font-size: 12px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+.airport-tooltip .leaflet-tooltip-tip {
+  border-top-color: rgba(26, 29, 33, 0.92) !important;
+}
+
+/* Airport IATA label */
+.airport-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: #22c55e;
+  text-shadow: 0 0 3px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 0, 0, 0.5);
+  white-space: nowrap;
+  pointer-events: none;
+}

@@ -2,12 +2,37 @@
 
 import { useEffect, useState } from "react";
 import { useMapStore } from "@/stores/map-store";
+import { ALTITUDE_BANDS, getAltitudeBand } from "@flight-tracker/config";
 
-function DataRow({ label, value }: { label: string; value: string | number }) {
+function SectionHeader({ title }: { title: string }) {
+  return (
+    <div className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider mt-3 mb-1 first:mt-1">
+      {title}
+    </div>
+  );
+}
+
+function DataRow({
+  label,
+  value,
+  dot,
+}: {
+  label: string;
+  value: string | number;
+  dot?: string;
+}) {
   return (
     <div className="flex justify-between py-1.5 border-b border-slate-700/30">
       <span className="text-xs text-slate-400">{label}</span>
-      <span className="text-sm text-slate-200 font-mono">{value}</span>
+      <span className="text-sm text-slate-200 font-mono flex items-center gap-1.5">
+        {dot && (
+          <span
+            className="inline-block w-2.5 h-2.5 rounded-full shrink-0"
+            style={{ backgroundColor: dot }}
+          />
+        )}
+        {value}
+      </span>
     </div>
   );
 }
@@ -83,6 +108,11 @@ export function FlightDetailPanel() {
       " UTC"
     : "";
 
+  const bandIndex = selectedFlight
+    ? getAltitudeBand(selectedFlight.geography.altitude, isGrounded)
+    : 0;
+  const altColor = ALTITUDE_BANDS[bandIndex].fill;
+
   return (
     <div
       className={`fixed right-0 top-14 bottom-10 w-80 bg-[#1a1d21]/90 backdrop-blur-sm border-l border-slate-700/50 flex flex-col transition-transform duration-300 ${
@@ -120,18 +150,28 @@ export function FlightDetailPanel() {
         <AircraftPhoto icao24={selectedFlight.aircraft.icao24} />
       )}
 
-      {/* Data rows */}
+      {/* Data sections */}
       {selectedFlight && (
         <div className="flex-1 overflow-y-auto px-4 py-2">
-          <DataRow label="Altitude" value={`${altFt.toLocaleString()} ft`} />
-          <DataRow label="Speed" value={`${speedKts} kts`} />
+          <SectionHeader title="Position" />
+          <DataRow label="Altitude" value={`${altFt.toLocaleString()} ft`} dot={altColor} />
           <DataRow label="Heading" value={`${heading}°`} />
+          <DataRow
+            label="Coordinates"
+            value={`${selectedFlight.geography.latitude.toFixed(4)}, ${selectedFlight.geography.longitude.toFixed(4)}`}
+          />
+
+          <SectionHeader title="Performance" />
+          <DataRow label="Ground Speed" value={`${speedKts} kts`} />
           <DataRow label="Vertical Speed" value={`${vspeedFpm} fpm`} />
           <DataRow label="Squawk" value={selectedFlight.system.squawk || "—"} />
+
+          <SectionHeader title="Aircraft" />
           <DataRow label="ICAO24" value={selectedFlight.aircraft.icao24} />
           <DataRow label="Registration" value={selectedFlight.aircraft.regNumber || "—"} />
-          <DataRow label="Departure" value={selectedFlight.departure.iataCode || "—"} />
-          <DataRow label="Arrival" value={selectedFlight.arrival.iataCode || "—"} />
+          {selectedFlight.originCountry && (
+            <DataRow label="Origin Country" value={selectedFlight.originCountry} />
+          )}
           <DataRow label="Last Seen" value={lastSeen} />
         </div>
       )}

@@ -111,6 +111,7 @@ function toFlightData(state: OpenSkyState): FlightData | null {
       icaoNumber: callsign || state[0],
       number: callsign,
     },
+    originCountry: state[2] || undefined,
     geography: {
       altitude: state[7] ?? state[13] ?? 0,
       direction: heading ?? 0,

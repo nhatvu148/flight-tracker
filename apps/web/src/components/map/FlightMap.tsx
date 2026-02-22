@@ -13,6 +13,7 @@ import "leaflet/dist/leaflet.css";
 import { getTileLayers, MAP_DEFAULTS } from "@flight-tracker/config";
 import { useMapStore } from "@/stores/map-store";
 import { FlightMarkers, getMarkerClicked } from "./FlightMarkers";
+import { AirportMarkers } from "./AirportMarkers";
 
 function MapEventHandler() {
   const { setCenter, setZoom, setBounds, selectFlight } = useMapStore();
@@ -86,6 +87,7 @@ export default function FlightMap() {
         ))}
       </LayersControl>
 
+      <AirportMarkers />
       <FlightMarkers />
       <ZoomControl position="bottomright" />
       <ScaleControl position="bottomleft" />

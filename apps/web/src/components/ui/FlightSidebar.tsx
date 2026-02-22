@@ -2,7 +2,7 @@
 
 import React, { useMemo } from "react";
 import { useMapStore } from "@/stores/map-store";
-import { useFlights } from "@/hooks/useFlights";
+import { useFilteredFlights } from "@/hooks/useFilteredFlights";
 import type { FlightData } from "@flight-tracker/types";
 
 const FlightRow = React.memo(function FlightRow({
@@ -46,7 +46,7 @@ export function FlightSidebar() {
   const searchQuery = useMapStore((s) => s.searchQuery);
   const selectedFlight = useMapStore((s) => s.selectedFlight);
   const selectFlight = useMapStore((s) => s.selectFlight);
-  const { data: flights } = useFlights();
+  const { data: flights } = useFilteredFlights();
 
   const filtered = useMemo(() => {
     if (!flights) return [];

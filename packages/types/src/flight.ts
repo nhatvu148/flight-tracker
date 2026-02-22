@@ -39,6 +39,7 @@ export interface FlightData {
   departure: ICode;
   flight: FlightIdentifier;
   geography: Geography;
+  originCountry?: string;
   speed: Speed;
   status: string;
   system: FlightSystem;

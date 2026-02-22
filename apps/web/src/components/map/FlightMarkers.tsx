@@ -1,35 +1,60 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet-markers-canvas";
-import { useFlights } from "@/hooks/useFlights";
+import { useFilteredFlights } from "@/hooks/useFilteredFlights";
 import { getClosest } from "@flight-tracker/utils";
-import { ANGLE_STEPS } from "@flight-tracker/config";
+import { ANGLE_STEPS, ALTITUDE_BANDS, getAltitudeBand } from "@flight-tracker/config";
 import { useMapStore } from "@/stores/map-store";
-import type { FlightData } from "@flight-tracker/types";
 
 const ICON_SIZE = 22;
 const ICON_SIZE_SELECTED = 30;
 
-// Cache icons by angle + selected state
+// Original SVG colors to replace
+const ORIG_FILL = "rgb(242,204,39)";
+const ORIG_STROKE = "rgb(80,60,0)";
+
+// Cache: raw SVG text per angle
+const svgTextCache = new Map<number, string>();
+// Cache: data URL icons keyed by "angle-bandIndex-selected"
 const iconCache = new Map<string, L.Icon>();
-function getAircraftIcon(angle: number, selected = false): L.Icon {
-  const key = `${angle}-${selected ? "sel" : "def"}`;
-  if (!iconCache.has(key)) {
-    const size = selected ? ICON_SIZE_SELECTED : ICON_SIZE;
-    const anchor = size / 2;
-    iconCache.set(
-      key,
-      L.icon({
-        iconUrl: `/aircraft-icons/aircraft-${angle}.svg`,
-        iconSize: [size, size],
-        iconAnchor: [anchor, anchor],
-      })
-    );
-  }
-  return iconCache.get(key)!;
+
+async function preloadSvgs(): Promise<void> {
+  const fetches = ANGLE_STEPS.map(async (angle) => {
+    if (svgTextCache.has(angle)) return;
+    const res = await fetch(`/aircraft-icons/aircraft-${angle}.svg`);
+    const text = await res.text();
+    svgTextCache.set(angle, text);
+  });
+  await Promise.all(fetches);
+}
+
+function getColoredIcon(angle: number, bandIndex: number, selected: boolean): L.Icon {
+  const key = `${angle}-${bandIndex}-${selected ? "sel" : "def"}`;
+  if (iconCache.has(key)) return iconCache.get(key)!;
+
+  const band = ALTITUDE_BANDS[bandIndex];
+  let svgText = svgTextCache.get(angle) ?? "";
+  svgText = svgText.replace(new RegExp(escapeRegex(ORIG_FILL), "g"), band.fill);
+  svgText = svgText.replace(new RegExp(escapeRegex(ORIG_STROKE), "g"), band.stroke);
+
+  const dataUrl = `data:image/svg+xml;base64,${btoa(svgText)}`;
+  const size = selected ? ICON_SIZE_SELECTED : ICON_SIZE;
+  const anchor = size / 2;
+
+  const icon = L.icon({
+    iconUrl: dataUrl,
+    iconSize: [size, size],
+    iconAnchor: [anchor, anchor],
+  });
+  iconCache.set(key, icon);
+  return icon;
+}
+
+function escapeRegex(s: string): string {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
 // Set by marker click, checked by map background click to prevent deselect race
@@ -41,13 +66,20 @@ export function FlightMarkers() {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const canvasRef = useRef<any>(null);
   const labelMarkerRef = useRef<L.Marker | null>(null);
-  const { data: flights } = useFlights();
+  const { data: flights } = useFilteredFlights();
   const selectedFlight = useMapStore((s) => s.selectedFlight);
   const selectFlight = useMapStore((s) => s.selectFlight);
+  const [svgsReady, setSvgsReady] = useState(svgTextCache.size > 0);
 
-  // Single effect: rebuild all markers when flights or selection changes
+  // Preload SVG text on mount
   useEffect(() => {
-    if (!map) return;
+    if (svgTextCache.size > 0) return;
+    preloadSvgs().then(() => setSvgsReady(true));
+  }, []);
+
+  // Rebuild all markers when flights, selection, or SVG readiness changes
+  useEffect(() => {
+    if (!map || !svgsReady) return;
 
     if (!canvasRef.current) {
       // @ts-expect-error leaflet-markers-canvas extends L
@@ -69,14 +101,15 @@ export function FlightMarkers() {
       const selectedIcao24 = selectedFlight?.aircraft.icao24;
 
       for (const flight of flights) {
-        const { latitude, longitude, direction } = flight.geography;
+        const { latitude, longitude, direction, altitude } = flight.geography;
         if (latitude == null || longitude == null) continue;
 
         const angle = getClosest(ANGLE_STEPS, direction);
         const isSelected = flight.aircraft.icao24 === selectedIcao24;
+        const bandIndex = getAltitudeBand(altitude, flight.speed.isGround === 1);
 
         const marker = L.marker([latitude, longitude], {
-          icon: getAircraftIcon(angle, isSelected),
+          icon: getColoredIcon(angle, bandIndex, isSelected),
         });
 
         marker.on("click", () => {
@@ -133,7 +166,7 @@ export function FlightMarkers() {
         labelMarkerRef.current = null;
       }
     };
-  }, [map, flights, selectedFlight, selectFlight]);
+  }, [map, flights, selectedFlight, selectFlight, svgsReady]);
 
   return null;
 }

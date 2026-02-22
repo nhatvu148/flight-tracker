@@ -62,6 +62,38 @@ export function getTileLayers(mapTilerToken?: string): TileLayerConfig[] {
   ];
 }
 
+// Altitude bands for color-coded aircraft markers (altitude in feet)
+export interface AltitudeBand {
+  label: string;
+  minFt: number;
+  maxFt: number;
+  fill: string;
+  stroke: string;
+}
+
+export const ALTITUDE_BANDS: AltitudeBand[] = [
+  { label: "Ground",  minFt: -Infinity, maxFt: 0,     fill: "rgb(150,150,150)", stroke: "rgb(80,80,80)" },
+  { label: "0-5K",    minFt: 0,         maxFt: 5000,  fill: "rgb(220,60,60)",   stroke: "rgb(120,20,20)" },
+  { label: "5-15K",   minFt: 5000,      maxFt: 15000, fill: "rgb(230,140,30)",  stroke: "rgb(130,70,0)" },
+  { label: "15-25K",  minFt: 15000,     maxFt: 25000, fill: "rgb(242,204,39)",  stroke: "rgb(80,60,0)" },
+  { label: "25-35K",  minFt: 25000,     maxFt: 35000, fill: "rgb(60,180,75)",   stroke: "rgb(20,100,30)" },
+  { label: "35-45K",  minFt: 35000,     maxFt: 45000, fill: "rgb(60,120,216)",  stroke: "rgb(20,50,120)" },
+  { label: "45K+",    minFt: 45000,     maxFt: Infinity, fill: "rgb(150,60,200)", stroke: "rgb(80,20,110)" },
+];
+
+/**
+ * Get the altitude band index for a given altitude in meters.
+ * Returns 0 (ground) for on-ground aircraft.
+ */
+export function getAltitudeBand(altitudeMeters: number, isGround: boolean): number {
+  if (isGround) return 0;
+  const altFt = altitudeMeters * 3.28084;
+  for (let i = ALTITUDE_BANDS.length - 1; i >= 0; i--) {
+    if (altFt >= ALTITUDE_BANDS[i].minFt) return i;
+  }
+  return 0;
+}
+
 export const API_CONFIG = {
   defaultPort: 5001,
   flightCacheTTL: 30, // seconds

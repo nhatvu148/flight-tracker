@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useMapStore } from "@/stores/map-store";
 
 export function TopBar() {
   const searchQuery = useMapStore((s) => s.searchQuery);
   const setSearchQuery = useMapStore((s) => s.setSearchQuery);
   const [utc, setUtc] = useState("");
+  const pathname = usePathname();
+  const isMapPage = pathname === "/";
 
   useEffect(() => {
     function tick() {
@@ -43,16 +47,42 @@ export function TopBar() {
         <span className="font-semibold text-sm tracking-wide">FlightTracker</span>
       </div>
 
-      {/* Search */}
-      <div className="flex-1 max-w-sm">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search flights..."
-          className="w-full h-8 px-3 rounded bg-slate-800/80 border border-slate-600/50 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-sky-500/50 transition-colors"
-        />
-      </div>
+      {/* Nav links */}
+      <nav className="flex items-center gap-1 shrink-0">
+        <Link
+          href="/"
+          className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+            isMapPage
+              ? "bg-sky-900/50 text-sky-300"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+          }`}
+        >
+          Map
+        </Link>
+        <Link
+          href="/airports"
+          className={`px-2.5 py-1 rounded text-xs font-medium transition-colors ${
+            pathname.startsWith("/airport")
+              ? "bg-sky-900/50 text-sky-300"
+              : "text-slate-400 hover:text-slate-200 hover:bg-slate-700/50"
+          }`}
+        >
+          Airports
+        </Link>
+      </nav>
+
+      {/* Search (map page only) */}
+      {isMapPage && (
+        <div className="flex-1 max-w-sm">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search flights..."
+            className="w-full h-8 px-3 rounded bg-slate-800/80 border border-slate-600/50 text-sm text-slate-200 placeholder-slate-500 outline-none focus:border-sky-500/50 transition-colors"
+          />
+        </div>
+      )}
 
       {/* Spacer */}
       <div className="flex-1" />
