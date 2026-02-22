@@ -7,9 +7,7 @@ import { useAirports } from "@/hooks/useFlights";
 import { useMapStore } from "@/stores/map-store";
 import type { AirportData } from "@flight-tracker/types";
 
-const AIRPORT_COLOR = "#22c55e";
 const MIN_ZOOM_DOTS = 7;
-const MIN_ZOOM_LABELS = 9;
 
 export function AirportMarkers() {
   const map = useMap();
@@ -40,37 +38,40 @@ export function AirportMarkers() {
         a.longitudeAirport <= bounds.east
     );
 
-    const showLabels = zoom >= MIN_ZOOM_LABELS;
-
     for (const airport of visible) {
       const latlng: L.LatLngExpression = [airport.latitudeAirport, airport.longitudeAirport];
+      const iata = airport.codeIataAirport || "";
+      const icao = airport.codeIcaoAirport || "";
+      const name = airport.nameAirport || "";
+      const country = airport.nameCountry || "";
 
-      // Green dot
-      L.circleMarker(latlng, {
-        radius: 4,
-        fillColor: AIRPORT_COLOR,
-        fillOpacity: 0.8,
-        color: AIRPORT_COLOR,
-        weight: 1,
-      })
-        .bindTooltip(
-          `<strong>${airport.codeIataAirport}</strong><br/>${airport.nameAirport}`,
-          { className: "airport-tooltip" }
-        )
-        .addTo(layer);
+      const marker = L.circleMarker(latlng, {
+        radius: 5,
+        fillColor: "#3b82f6",
+        fillOpacity: 0.9,
+        color: "#fff",
+        weight: 1.5,
+      });
 
-      // IATA label at higher zoom
-      if (showLabels && airport.codeIataAirport) {
-        L.marker(latlng, {
-          icon: L.divIcon({
-            className: "airport-label",
-            html: airport.codeIataAirport,
-            iconSize: [40, 14],
-            iconAnchor: [-6, 7],
-          }),
-          interactive: false,
-        }).addTo(layer);
-      }
+      // Tooltip on hover — name + codes
+      marker.bindTooltip(
+        `<div><strong>${name}</strong></div>` +
+        `<div>${iata}${icao ? " / " + icao : ""}</div>`,
+        { className: "airport-tooltip", direction: "top", offset: [0, -6] }
+      );
+
+      // Popup on click — airport info + link
+      marker.bindPopup(
+        `<div class="airport-popup">` +
+          `<div class="airport-popup-name">${name}</div>` +
+          `<div class="airport-popup-codes">${iata}${icao ? " / " + icao : ""}</div>` +
+          (country ? `<div class="airport-popup-country">${country}</div>` : "") +
+          `<a href="/airport/${encodeURIComponent(iata)}" class="airport-popup-link">View details &rarr;</a>` +
+        `</div>`,
+        { className: "airport-popup-container", maxWidth: 220 }
+      );
+
+      marker.addTo(layer);
     }
   }, [zoom, bounds, airports]);
 

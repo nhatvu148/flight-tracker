@@ -18,10 +18,10 @@ export function AirportsPageClient() {
     const q = search.toLowerCase();
     return airports.filter(
       (a) =>
-        a.codeIataAirport.toLowerCase().includes(q) ||
-        a.nameAirport.toLowerCase().includes(q) ||
-        a.nameCountry.toLowerCase().includes(q) ||
-        a.codeIataCity.toLowerCase().includes(q)
+        a.codeIataAirport?.toLowerCase().includes(q) ||
+        a.nameAirport?.toLowerCase().includes(q) ||
+        a.nameCountry?.toLowerCase().includes(q) ||
+        a.codeIataCity?.toLowerCase().includes(q)
     );
   }, [airports, search]);
 

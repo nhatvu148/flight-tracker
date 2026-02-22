@@ -54,12 +54,54 @@
   border-top-color: rgba(26, 29, 33, 0.92) !important;
 }
 
-/* Airport IATA label */
-.airport-label {
-  font-size: 10px;
+/* Airport popup */
+.airport-popup-container .leaflet-popup-content-wrapper {
+  background: rgba(26, 29, 33, 0.95) !important;
+  color: #e2e8f0 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4) !important;
+  border: 1px solid rgba(100, 116, 139, 0.3) !important;
+}
+
+.airport-popup-container .leaflet-popup-tip {
+  background: rgba(26, 29, 33, 0.95) !important;
+}
+
+.airport-popup-container .leaflet-popup-close-button {
+  color: #94a3b8 !important;
+}
+
+.airport-popup-container .leaflet-popup-close-button:hover {
+  color: #e2e8f0 !important;
+}
+
+.airport-popup-name {
+  font-size: 13px;
   font-weight: 600;
-  color: #22c55e;
-  text-shadow: 0 0 3px rgba(0, 0, 0, 0.8), 0 0 6px rgba(0, 0, 0, 0.5);
-  white-space: nowrap;
-  pointer-events: none;
+  margin-bottom: 2px;
+}
+
+.airport-popup-codes {
+  font-size: 12px;
+  font-family: ui-monospace, monospace;
+  color: #38bdf8;
+}
+
+.airport-popup-country {
+  font-size: 11px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.airport-popup-link {
+  display: inline-block;
+  margin-top: 6px;
+  font-size: 11px;
+  color: #38bdf8 !important;
+  text-decoration: none !important;
+}
+
+.airport-popup-link:hover {
+  color: #7dd3fc !important;
+  text-decoration: underline !important;
 }

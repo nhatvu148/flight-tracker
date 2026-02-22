@@ -9,6 +9,7 @@ import {
   ScaleControl,
   useMapEvents,
 } from "react-leaflet";
+import { useSearchParams } from "next/navigation";
 import "leaflet/dist/leaflet.css";
 import { getTileLayers, MAP_DEFAULTS } from "@flight-tracker/config";
 import { useMapStore } from "@/stores/map-store";
@@ -17,6 +18,7 @@ import { AirportMarkers } from "./AirportMarkers";
 
 function MapEventHandler() {
   const { setCenter, setZoom, setBounds, selectFlight } = useMapStore();
+  const searchParams = useSearchParams();
 
   const map = useMapEvents({
     moveend(e) {
@@ -52,6 +54,20 @@ function MapEventHandler() {
       west: b.getWest(),
     });
   }, [map, setBounds]);
+
+  // Fly to coordinates from URL params (e.g. /?lat=10.81&lng=106.66&zoom=12)
+  useEffect(() => {
+    const lat = searchParams.get("lat");
+    const lng = searchParams.get("lng");
+    const z = searchParams.get("zoom");
+    if (lat && lng) {
+      map.flyTo(
+        [parseFloat(lat), parseFloat(lng)],
+        z ? parseInt(z, 10) : 12,
+        { duration: 1.5 }
+      );
+    }
+  }, [map, searchParams]);
 
   return null;
 }
