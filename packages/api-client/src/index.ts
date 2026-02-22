@@ -2,9 +2,9 @@ import type { FlightData, AirportData } from "@flight-tracker/types";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") {
-    return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5001";
+    return process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5005";
   }
-  return process.env.API_URL ?? "http://localhost:5001";
+  return process.env.API_URL ?? "http://localhost:5005";
 };
 
 export async function getFlights(

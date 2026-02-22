@@ -95,7 +95,7 @@ export function getAltitudeBand(altitudeMeters: number, isGround: boolean): numb
 }
 
 export const API_CONFIG = {
-  defaultPort: 5001,
+  defaultPort: 5005,
   flightCacheTTL: 30, // seconds
   airportCacheTTL: 86400, // 24 hours
   weatherCacheTTL: 900, // 15 minutes
