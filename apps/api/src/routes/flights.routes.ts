@@ -60,12 +60,31 @@ flightsRouter.get("/live", async (req, res) => {
   }
 });
 
-// GET /api/flights/:id
+// GET /api/flights/:id — find a flight by icao24 from cached live data
 flightsRouter.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    // TODO: Fetch single flight detail from FlightAware
-    res.json({ message: `Flight ${id} detail — not yet implemented` });
+    const icao24 = id.toLowerCase();
+
+    // Search all cached flight lists for the matching icao24
+    for (const entry of cacheMap.values()) {
+      const flights = entry.data as Array<{ aircraft: { icao24: string } }>;
+      const found = flights.find(
+        (f) => f.aircraft.icao24.toLowerCase() === icao24
+      );
+      if (found) return res.json(found);
+    }
+
+    // Not in cache — fetch global and search
+    const flights = await fetchLiveFlights();
+    cacheMap.set("all", { data: flights, timestamp: Date.now() });
+
+    const found = flights.find(
+      (f) => f.aircraft.icao24.toLowerCase() === icao24
+    );
+    if (found) return res.json(found);
+
+    res.status(404).json({ error: "Flight not found" });
   } catch (error) {
     console.error("Error fetching flight:", error);
     res.status(500).json({ error: "Failed to fetch flight" });

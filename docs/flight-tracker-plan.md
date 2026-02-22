@@ -258,6 +258,14 @@ From `/Users/nhatvu148/Work/my-apps/flight-tracker/`:
 - [ ] `/airport/[code]` page — airport info, current departures/arrivals
 - [ ] Header with nav: Map, Search, Airports, Airlines
 
+### Week 3.5: Distance measurement tool
+- [ ] **Aircraft → Airport distance**: when a flight is selected, clicking an airport shows distance + ETA based on current ground speed
+- [ ] **Airport → Airport distance**: measure great-circle route distance between two airports
+- [ ] **Aircraft → Aircraft distance**: separation distance between two selected flights (niche, for enthusiasts)
+- [ ] Visual: dashed line on map between the two points with distance label (km/nm)
+- [ ] Uses `L.latLng.distanceTo()` + `L.polyline` for the connecting line
+- [ ] Priority: Aircraft→Airport first (highest user value), others later
+
 ### Week 4: Auth + saved flights
 - [ ] NextAuth setup (Google OAuth, same as Han Nom Dict)
 - [ ] DB schema: users, saved_flights, tracked_routes
@@ -294,11 +302,25 @@ From `/Users/nhatvu148/Work/my-apps/flight-tracker/`:
   - Output: "Low/Medium/High delay risk" with explanation
 - [ ] `DelayPredictor.tsx` — visual indicator on flight detail page
 
-### Week 7: Premium features + Stripe
+### Week 7: AI flight cost estimation + Premium features + Stripe
+- [ ] **AI-powered flight cost estimation** (unique differentiator — no competitor combines tracking + price AI):
+  - [ ] Price data service: integrate Amadeus Self-Service API or Tequila (Kiwi.com) API for fare lookups
+  - [ ] `price.service.ts` — query flight prices by route, date range, cabin class
+  - [ ] `price.routes.ts` — `GET /api/prices/search` (route + dates), `GET /api/prices/trends` (historical)
+  - [ ] Claude tool-use integration: AI can call price APIs as tools to answer user queries
+  - [ ] `FlightPricePanel.tsx` — price trend chart (sparkline of last 30 days) on flight/route detail
+  - [ ] AI assistant queries:
+    - "Should I buy now or wait?" — analyze price trend + seasonality for a route
+    - "Cheapest day to fly SFO→SGN in March?" — compare fares across dates
+    - "Alternative routes that are cheaper?" — suggest nearby airports or indirect flights
+    - "Is this flight price good?" — compare against historical average for the route
+  - [ ] Price alerts: notify when fare drops below user-set threshold (premium feature)
+  - [ ] Affiliate integration: "Book this flight" links to Skyscanner/Kiwi (revenue share)
 - [ ] Stripe integration (same pattern as standard SaaS)
-- [ ] Free tier: 3 tracked flights, 5 AI queries/day, ads
+- [ ] Free tier: 3 tracked flights, 5 AI queries/day, 1 price check/day, ads
 - [ ] Premium ($6.99/mo or $59/yr):
   - Unlimited tracking + AI queries
+  - Unlimited price checks + price alerts
   - Delay predictions
   - Price alerts (via affiliate links)
   - Ad-free

@@ -1,4 +1,5 @@
 import { MapLoader } from "@/components/map/MapLoader";
+import { AltitudeLegend } from "@/components/map/AltitudeLegend";
 import { TopBar } from "@/components/ui/TopBar";
 import { FlightSidebar } from "@/components/ui/FlightSidebar";
 import { FlightDetailPanel } from "@/components/ui/FlightDetailPanel";
@@ -9,6 +10,7 @@ export default function Home() {
     <main className="h-screen w-screen">
       <MapLoader />
       <TopBar />
+      <AltitudeLegend />
       <FlightSidebar />
       <FlightDetailPanel />
       <BottomToolbar />

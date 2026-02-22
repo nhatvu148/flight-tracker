@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -15,10 +15,20 @@ import { getTileLayers, MAP_DEFAULTS } from "@flight-tracker/config";
 import { useMapStore } from "@/stores/map-store";
 import { FlightMarkers, getMarkerClicked } from "./FlightMarkers";
 import { AirportMarkers } from "./AirportMarkers";
+import { FlightTrail } from "./FlightTrail";
+
+function updateUrlState(lat: number, lng: number, z: number) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("lat", lat.toFixed(4));
+  url.searchParams.set("lng", lng.toFixed(4));
+  url.searchParams.set("zoom", String(z));
+  window.history.replaceState(null, "", url.toString());
+}
 
 function MapEventHandler() {
   const { setCenter, setZoom, setBounds, selectFlight } = useMapStore();
   const searchParams = useSearchParams();
+  const initialFlyDone = useRef(false);
 
   const map = useMapEvents({
     moveend(e) {
@@ -32,9 +42,13 @@ function MapEventHandler() {
         east: b.getEast(),
         west: b.getWest(),
       });
+      updateUrlState(c.lat, c.lng, m.getZoom());
     },
     zoomend(e) {
-      setZoom(e.target.getZoom());
+      const z = e.target.getZoom();
+      setZoom(z);
+      const c = e.target.getCenter();
+      updateUrlState(c.lat, c.lng, z);
     },
     click() {
       // Skip deselect if a marker was just clicked (both fire on same map click)
@@ -55,12 +69,14 @@ function MapEventHandler() {
     });
   }, [map, setBounds]);
 
-  // Fly to coordinates from URL params (e.g. /?lat=10.81&lng=106.66&zoom=12)
+  // Fly to coordinates from URL params on initial load only
   useEffect(() => {
+    if (initialFlyDone.current) return;
     const lat = searchParams.get("lat");
     const lng = searchParams.get("lng");
     const z = searchParams.get("zoom");
     if (lat && lng) {
+      initialFlyDone.current = true;
       map.flyTo(
         [parseFloat(lat), parseFloat(lng)],
         z ? parseInt(z, 10) : 12,
@@ -105,6 +121,7 @@ export default function FlightMap() {
 
       <AirportMarkers />
       <FlightMarkers />
+      <FlightTrail />
       <ZoomControl position="bottomright" />
       <ScaleControl position="bottomleft" />
     </MapContainer>

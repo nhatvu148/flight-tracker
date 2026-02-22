@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { useMapStore } from "@/stores/map-store";
 import { ALTITUDE_BANDS, getAltitudeBand } from "@flight-tracker/config";
 
@@ -173,6 +174,15 @@ export function FlightDetailPanel() {
             <DataRow label="Origin Country" value={selectedFlight.originCountry} />
           )}
           <DataRow label="Last Seen" value={lastSeen} />
+
+          <div className="mt-3">
+            <Link
+              href={`/flight/${selectedFlight.aircraft.icao24}`}
+              className="text-[11px] text-sky-400 hover:text-sky-300 transition-colors"
+            >
+              Open full detail page &rarr;
+            </Link>
+          </div>
         </div>
       )}
     </div>
