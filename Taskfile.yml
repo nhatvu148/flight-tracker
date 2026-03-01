@@ -1,0 +1,74 @@
+version: "3"
+
+includes:
+  db:
+    taskfile: taskfiles/db.yml
+    optional: true
+
+tasks:
+  dev:
+    desc: Start all services (web + api)
+    cmds:
+      - npx turbo run dev
+
+  dev:web:
+    desc: Start web dev server only
+    dir: apps/web
+    cmds:
+      - npm run dev
+
+  dev:api:
+    desc: Start API dev server only
+    dir: apps/api
+    cmds:
+      - npm run dev
+
+  build:
+    desc: Build all packages
+    cmds:
+      - npx turbo run build
+
+  build:web:
+    desc: Build web app
+    dir: apps/web
+    cmds:
+      - npm run build
+
+  build:api:
+    desc: Build API
+    dir: apps/api
+    cmds:
+      - npm run build
+
+  build:mobile:
+    desc: Build mobile app (Vite + Cap sync)
+    dir: apps/mobile
+    cmds:
+      - npm run build
+      - npx cap sync
+
+  ios:
+    desc: Run iOS simulator
+    dir: apps/mobile
+    cmds:
+      - npm run build
+      - test -d ios || npx cap add ios
+      - npx cap sync
+      - npx cap run ios
+
+  ios:open:
+    desc: Open Xcode project
+    dir: apps/mobile
+    cmds:
+      - npx cap open ios
+
+  lint:
+    desc: Lint all packages
+    cmds:
+      - npx turbo run lint
+
+  clean:
+    desc: Clean all build artifacts
+    cmds:
+      - npx turbo run clean
+      - rm -rf node_modules
