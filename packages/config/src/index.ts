@@ -102,6 +102,6 @@ export const API_CONFIG = {
 } as const;
 
 export const WEB_CONFIG = {
-  defaultPort: 3000,
+  defaultPort: 3589,
   pollInterval: 30_000, // 30s for live flight updates
 } as const;
